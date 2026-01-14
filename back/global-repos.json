@@ -7,7 +7,6 @@
     { "url": "https://wuxu1.github.io/wuxu-complete-plus.json" },
     { "url": "https://ipa.cypwn.xyz/cypwn.json" },
     { "url": "https://driftywinds.github.io/AltStore/apps.json" },
-    { "url": "https://raw.githubusercontent.com/TheNightmanCodeth/chromium-ios/master/altstore-source.json" },
-    { "url": "https://repository.apptesters.org/" }
+    { "url": "https://raw.githubusercontent.com/TheNightmanCodeth/chromium-ios/master/altstore-source.json" }
   ]
 }
