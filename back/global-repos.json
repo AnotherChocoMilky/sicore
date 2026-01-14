@@ -1,5 +1,6 @@
 {
   "repos": [
+    { "url": "https://repository.apptesters.org/" },
     { "url": "https://raw.githubusercontent.com/WhySooooFurious/Ultimate-Sideloading-Guide/refs/heads/main/raw-files/app-repo.json" },
     { "url": "https://esign.yyyue.xyz/app.json" },
     { "url": "https://raw.githubusercontent.com/vizunchik/AltStoreRus/master/apps.json" },
@@ -9,7 +10,6 @@
     { "url": "https://driftywinds.github.io/AltStore/apps.json" },
     { "url": "https://raw.githubusercontent.com/TheNightmanCodeth/chromium-ios/master/altstore-source.json" },
     { "url": "https://community-apps.sidestore.io/sidecommunity.json" },
-    { "url": "https://raw.githubusercontent.com/arichornloverALT/arichornloveralt.github.io/main/apps2.json" },
     { "url": "https://raw.githubusercontent.com/lo-cafe/winston-altstore/main/apps.json" },
     { "url": "https://tiny.one/SpotC" },
     { "url": "https://theodyssey.dev/altstore/odysseysource.json" },
@@ -17,6 +17,7 @@
     { "url": "https://ish.app/altstore.json" },
     { "url": "https://raw.githubusercontent.com/Balackburn/YTLitePlusAltstore/main/apps.json" },
     { "url": "https://altstore.oatmealdome.me/" },
+    { "url": "https://raw.githubusercontent.com/arichornloverALT/arichornloveralt.github.io/main/apps2.json" },
     { "url": "https://alts.lao.sb/" },
     { "url": "https://xitrix.github.io/iTorrent/AltStore.json" },
     { "url": "https://driftywinds.github.io/repos/esign.json" },
