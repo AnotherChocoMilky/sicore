@@ -167,12 +167,12 @@ function applySearch() {
   const appsToFilter = viewingRepoUrl ? currentApps : allAppsIndex;
 
   if (!q) {
-    // Home: nessuna query → mostra solo le repo
     if (!viewingRepoUrl) {
       reposArea.style.display = "";
       appsArea.innerHTML = "";
       filteredApps = [];
       loaded = 0;
+      window.onscroll = null;
       return;
     }
     filteredApps = appsToFilter.slice();
@@ -184,22 +184,17 @@ function applySearch() {
 
   if (!viewingRepoUrl) reposArea.style.display = "none";
 
-  filteredApps = appsToFilter.filter(app => {
-    const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
-    const fields = [
-      app.name,
-      app.subtitle,
-      app.localizedDescription,
-      app.developerName,
-      app.bundleIdentifier,
-      latest.localizedDescription
-    ];
-    return fields.some(f => f && f.toLowerCase().includes(q));
-  });
+  filteredApps = appsToFilter.filter(app => app.name && app.name.toLowerCase().includes(q));
 
   loaded = 0;
   appsArea.innerHTML = "";
   renderNextBatch();
+
+  window.onscroll = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      if (loaded < filteredApps.length) renderNextBatch();
+    }
+  };
 }
 
 let searchTimeout;
