@@ -45,16 +45,7 @@ async function loadRepos() {
     }
     const reposData = await loadAllRepos(globals.repos);
     allAppsIndex = [];
-    reposData.forEach(repo => {
-      if (repo.apps && Array.isArray(repo.apps)) {
-        repo.apps.forEach(app => {
-          allAppsIndex.push({
-            ...app,
-            __repoName: repo.name || "Repo"
-          });
-        });
-      }
-    });
+    reposData.forEach(indexRepoApps);
     let out = "";
     for (let i = 0; i < reposData.length; i++) {
       const data = reposData[i];
@@ -132,6 +123,7 @@ function renderRepoCard(repoData,repoUrl,useProxy=true,isUserRepo=true){
 // open repo
 async function openRepo(url,useProxy){
   viewingRepoUrl = url;
+  searchInput.value = "";
   window.scrollTo({ top: 0 });
   reposArea.style.display="none";
   backBtn.style.display="block";
@@ -213,20 +205,29 @@ backBtn.addEventListener("click",()=>{
 });
 
 // search!
+function indexRepoApps(repo) {
+  if (!repo.apps || !Array.isArray(repo.apps)) return;
+
+  repo.apps.forEach(app => {
+    allAppsIndex.push({
+      ...app,
+      __repoName: repo.name || "Repo"
+    });
+  });
+}
+
 searchInput.addEventListener("input", () => {
   const q = searchInput.value.trim().toLowerCase();
-
   if (!q) {
     if (viewingRepoUrl) {
       renderApps(currentApps);
     } else {
       appsArea.innerHTML = "";
+      reposArea.style.display = "";
     }
     return;
   }
-
   const source = viewingRepoUrl ? currentApps : allAppsIndex;
-
   const filtered = source.filter(app => {
     const latest = (app.versions && app.versions[0]) || {};
     return [
@@ -238,10 +239,11 @@ searchInput.addEventListener("input", () => {
       latest.localizedDescription
     ].some(f => f && f.toLowerCase().includes(q));
   });
-
+  if (!viewingRepoUrl) {
+    reposArea.style.display = "none";
+  }
   renderApps(filtered);
 });
-
 // import stuff
 const importModal = document.createElement("div");
 importModal.id = "importModal";
@@ -335,9 +337,14 @@ window.addEventListener("keydown", e => {
   }
 });
 
-loadRepos().then(()=>{(async()=>{
-  for(const r of getUserRepos()){
-    const repo=await fetchUserRepo(r.url,r.useProxy);
-    if(repo) renderRepoCard(repo,r.url,r.useProxy,true);
-  }
-})()});
+loadRepos().then(() => {
+  (async () => {
+    for (const r of getUserRepos()) {
+      const repo = await fetchUserRepo(r.url, r.useProxy);
+      if (repo) {
+        renderRepoCard(repo, r.url, r.useProxy, true);
+        indexRepoApps(repo);
+      }
+    }
+  })();
+});
