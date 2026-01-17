@@ -8,7 +8,7 @@
   <img src="static/icons/logo1024x1024.png" alt="Choco Milky Logo" width="200"/>
 </p>
 
-<h1 align="center">chocomilkyX Libary</h1>
+<h1 align="center">chocomilkyX Library</h1>
 
 
 <p align="center">
