@@ -29,7 +29,7 @@
 - static html webpage  
 - ready for github pages  
 - minimal and lightweight  
-- personal custom repos
+- personal repos import
 
 ## contribute to the project
 
