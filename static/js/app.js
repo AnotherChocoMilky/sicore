@@ -4,13 +4,16 @@ const backBtn = document.getElementById('backBtn');
 const searchBar = document.getElementById('searchBar');
 const searchInput = document.getElementById('searchInput');
 const toast = document.getElementById('toast');
-const importRepoInput = document.getElementById("importRepoInput");
-const importRepoBtn = document.getElementById("importRepoBtn");
+const importBtn = document.getElementById("importBtn");
 
 let currentApps = [];
 let viewingRepoUrl = null;
+let allAppsIndex = [];
+let filteredApps = [];
+let loaded = 0;
 const proxy = "https://proxy-sooty-ten-88.vercel.app/api/proxy?url=";
 
+// toast
 function showToast(msg, ms = 1500) {
   toast.textContent = msg;
   toast.style.display = 'block';
@@ -18,16 +21,13 @@ function showToast(msg, ms = 1500) {
   toast._t = setTimeout(() => (toast.style.display = 'none'), ms);
 }
 
-// fetch functions
+// fetch repo JSON
 const fetchRepo = async (repo) => {
   const url = repo.useProxy ? proxy + encodeURIComponent(repo.url) : repo.url;
   try {
     const r = await fetch(url);
     return await r.json();
-  } catch (err) {
-    console.warn("Failed to fetch repo:", repo.url);
-    return null;
-  }
+  } catch { return null; }
 };
 
 const loadAllRepos = async (repos) => {
@@ -35,7 +35,7 @@ const loadAllRepos = async (repos) => {
   return results.filter(r => r);
 };
 
-// Load and render repos
+// Load global repos
 async function loadRepos() {
   reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
   try {
@@ -45,8 +45,14 @@ async function loadRepos() {
       reposArea.innerHTML = `<div class="loading-line">No libraries loaded.</div>`;
       return;
     }
-
     const reposData = await loadAllRepos(globals.repos);
+    allAppsIndex = [];
+    reposData.forEach(indexRepoApps);
+    currentApps = allAppsIndex.slice();
+    filteredApps = currentApps.slice();
+    loaded = 0;
+    renderNextBatch();
+
     let out = "";
     for (let i = 0; i < reposData.length; i++) {
       const data = reposData[i];
@@ -70,13 +76,23 @@ async function loadRepos() {
       `;
     }
     reposArea.innerHTML = out;
-  } catch (err) {
-    console.error(err);
+    searchBar.style.display = "flex"; // always show search
+  } catch {
     reposArea.innerHTML = `<div class="loading-line">Failed to load libraries.</div>`;
   }
 }
 
-// fetch personal repos
+// localstorage for personal repos
+function getUserRepos(){return JSON.parse(localStorage.getItem("userRepos")||"[]")}
+function saveUserRepo(r){
+  const x=getUserRepos();
+  if(!x.find(e=>e.url===r.url)){x.push(r);localStorage.setItem("userRepos",JSON.stringify(x))}
+}
+function removeUserRepo(url){
+  localStorage.setItem("userRepos",JSON.stringify(getUserRepos().filter(r=>r.url!==url)))
+}
+
+// fetch personal repo JSON
 async function fetchUserRepo(url,useProxy=false){
   try{
     const fetchUrl=useProxy?proxy+encodeURIComponent(url):url;
@@ -85,11 +101,11 @@ async function fetchUserRepo(url,useProxy=false){
     const data=await res.json();
     if(!data.apps||!Array.isArray(data.apps)) throw "";
     return data;
-  }catch(e){return null}
+  }catch{return null}
 }
 
-// personal repo card + remove
-function renderRepoCard(repoData,repoUrl,useProxy=false,isUserRepo=true){
+// render single repo card
+function renderRepoCard(repoData,repoUrl,useProxy=true,isUserRepo=true){
   const first=repoData.apps[0]||{};
   const icon=repoData.iconURL||first.iconURL||"";
   const name=repoData.name||first.name||"Unnamed Repo";
@@ -111,127 +127,110 @@ function renderRepoCard(repoData,repoUrl,useProxy=false,isUserRepo=true){
   reposArea.prepend(div);
 }
 
-// local storage helpers
-function getUserRepos(){return JSON.parse(localStorage.getItem("userRepos")||"[]")}
-function saveUserRepo(r){
-  const x=getUserRepos();
-  if(!x.find(e=>e.url===r.url)){x.push(r);localStorage.setItem("userRepos",JSON.stringify(x))}
-}
-function removeUserRepo(url){
-  localStorage.setItem("userRepos",JSON.stringify(getUserRepos().filter(r=>r.url!==url)))
-}
-
-//listener
-importRepoBtn.addEventListener("click",async()=>{
-  const url=importRepoInput.value.trim();
-  if(!url) return;
-  showToast("Importing repo…");
-  let repo=await fetchUserRepo(url);
-  let useProxy=false;
-  if(!repo){repo=await fetchUserRepo(url,true);useProxy=true}
-  if(!repo){showToast("Invalid repo",2000);return}
-  renderRepoCard(repo,url,useProxy,true);
-  saveUserRepo({url,useProxy});
-  importRepoInput.value="";
-  showToast("Repo imported!");
-});
-
-// Handlers
-reposArea.addEventListener("click", (e) => {
-  const btn = e.target.closest(".openBtn");
-  if (!btn) return;
-  const url = btn.dataset.url;
-  const useProxy = btn.dataset.useProxy === "true";
-  openRepo(url, useProxy);
-});
-
-// event delegation
-reposArea.addEventListener("click", (e) => {
-  const btn = e.target.closest(".copyBtn");
-  if (!btn) return;
-  navigator.clipboard.writeText(btn.dataset.url)
-    .then(() => showToast("Copied URL"))
-    .catch(() => alert("Copy failed"));
-});
-
-// remove button
-reposArea.addEventListener("click",e=>{
-  const btn=e.target.closest(".removeBtn");
-  if(!btn) return;
-  const card=btn.closest(".repo-card");
-  removeUserRepo(card.dataset.url);
-  card.remove();
-  showToast("Repo removed");
-});
-
-async function openRepo(url, useProxy) {
+// open repo
+async function openRepo(url,useProxy){
   viewingRepoUrl = url;
-  window.scrollTo({ top: 0, behavior: "auto" });
-  reposArea.style.display = "none";
-  document.getElementById("importRepo").style.display = "none"; // do not show the import bar
-  backBtn.style.display = "block";
-  searchBar.style.display = "flex";
-  appsArea.innerHTML = "";
-  // skeleton loader
+  searchInput.value = "";
+  window.scrollTo({ top: 0 });
+  reposArea.style.display="none";
+  backBtn.style.display="block";
+  appsArea.innerHTML="";
   for(let i=0;i<10;i++){
-    const s = document.createElement("div"); s.className="skeleton"; appsArea.appendChild(s);
+    const s=document.createElement("div"); s.className="skeleton"; appsArea.appendChild(s);
   }
-
-  try {
-    const fetchUrl = useProxy ? proxy + encodeURIComponent(url) : url;
-    const res = await fetch(fetchUrl);
-    const repo = await res.json();
-    const apps = repo.apps || [];
-    currentApps = apps;
-    renderApps(apps.slice(0,20)); // first twenties
-    // infinite for the rest
-    let loaded = 20;
-    window.onscroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if(loaded < apps.length){
-          renderApps(apps.slice(loaded, loaded+20), true);
-          loaded += 20;
-        }
+  try{
+    const fetchUrl=useProxy?proxy+encodeURIComponent(url):url;
+    const res=await fetch(fetchUrl);
+    const repo=await res.json();
+    const apps=repo.apps||[];
+    currentApps=apps;
+    applySearch();
+    window.onscroll=()=> {
+      if(window.innerHeight+window.scrollY>=document.body.offsetHeight) {
+        if(loaded<filteredApps.length) renderNextBatch();
       }
     };
-  } catch (err) {
-    console.error(err);
-    appsArea.innerHTML = `<div class="loading-line">Error loading repo.</div>`;
+  }catch{
+    appsArea.innerHTML=`<div class="loading-line">Error loading repo.</div>`;
   }
 }
 
-function renderApps(apps, append=false){
-  if(!apps || apps.length === 0){ 
-    if(!append) appsArea.innerHTML = `<div class="loading-line">No apps found.</div>`; 
-    return; 
-  }
-  if(!append) appsArea.innerHTML = "";
+// search + scroll
+function renderNextBatch() {
+  const batchSize = 20;
+  const nextApps = filteredApps.slice(loaded, loaded + batchSize);
+  renderApps(nextApps, loaded > 0, viewingRepoUrl !== null);
+  loaded += nextApps.length;
+}
 
-  apps.forEach(app=>{
+function applySearch() {
+  const q = searchInput.value.toLowerCase();
+  const appsToFilter = viewingRepoUrl ? currentApps : allAppsIndex;
+  if (!q) {
+    filteredApps = appsToFilter.slice();
+    loaded = 0;
+    appsArea.innerHTML = "";
+    renderNextBatch();
+    if (!viewingRepoUrl) {
+      reposArea.style.display = "";
+    }
+    return;
+  }
+  if (!viewingRepoUrl) {
+    reposArea.style.display = "none";
+  }
+  filteredApps = appsToFilter.filter(app => {
+    const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
+    const fields = [
+      app.name,
+      app.subtitle,
+      app.localizedDescription,
+      app.developerName,
+      app.bundleIdentifier,
+      latest.localizedDescription
+    ];
+    return fields.some(f => f && f.toLowerCase().includes(q));
+  });
+  loaded = 0;
+  appsArea.innerHTML = "";
+  renderNextBatch();
+}
+
+let searchTimeout;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(applySearch, 250);
+});
+
+// render apps cards
+function renderApps(apps, append = false, showRepo = false) {
+  if (!apps || apps.length === 0) {
+    if (!append) appsArea.innerHTML = `<div class="loading-line">No apps found.</div>`;
+    return;
+  }
+  if (!append) appsArea.innerHTML = "";
+
+  apps.forEach(app => {
     const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
     const version = latest.version || app.version || "";
     const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
     const downloadURL = app.downloadURL || latest.downloadURL || "#";
     const sizeBytes = latest.size || app.size || 0;
-
     let sizeText = "Unknown";
-    if(sizeBytes > 1024*1024){
-      sizeText = (sizeBytes / (1024*1024)).toFixed(2) + " MB";
-    } else if(sizeBytes > 1024){
-      sizeText = (sizeBytes / 1024).toFixed(2) + " KB";
-    } else if(sizeBytes > 0){
-      sizeText = sizeBytes + " B";
-    }
-
+    if (sizeBytes > 1024*1024) sizeText = (sizeBytes/(1024*1024)).toFixed(2)+" MB";
+    else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
+    else if (sizeBytes > 0) sizeText = sizeBytes+" B";
+    const repoNameHtml = app.__repoName ? `<div class="repo-name-home">From: ${app.__repoName}</div>` : "";
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div class="icon"><img src="${app.iconURL || ""}" alt=""></div>
+      <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""></div>
       <div class="title">${app.name || ""}</div>
       <div class="meta">
         ${version ? `<span class="version">v${version}</span>` : ""}
         <span class="size">${sizeText}</span>
       </div>
+      ${repoNameHtml}
       <div class="subtitle">${desc}</div>
       <a class="download" href="${downloadURL}" target="_blank" rel="noopener">Download</a>
     `;
@@ -239,32 +238,151 @@ function renderApps(apps, append=false){
   });
 }
 
-backBtn.addEventListener("click",()=>{
-  viewingRepoUrl = null;
-  appsArea.innerHTML = "";
-  reposArea.style.display = "";
-  document.getElementById("importRepo").style.display = "flex"; // re-enable import bar
-  backBtn.style.display = "none";
-  searchBar.style.display = "none";
-  window.scrollTo({ top: 0, behavior: "auto" });
-  window.onscroll = null; // reset infinite scroll
+// events
+reposArea.addEventListener("click",e=>{
+  const btn=e.target.closest(".openBtn");
+  if(btn) return openRepo(btn.dataset.url,btn.dataset.useProxy==="true");
 });
 
-searchInput.addEventListener("input",()=>{
-  const q=searchInput.value.toLowerCase();
-  const filtered=(currentApps||[]).filter(app=>{
-    const latest=(app.versions&&app.versions.length)?app.versions[0]:{};
-    const fields=[app.name, app.subtitle, app.localizedDescription, app.developerName, app.bundleIdentifier, latest.localizedDescription];
-    return fields.some(f=>f&&f.toLowerCase().includes(q));
+reposArea.addEventListener("click",e=>{
+  const btn=e.target.closest(".copyBtn");
+  if(btn) return navigator.clipboard.writeText(btn.dataset.url).then(()=>showToast("Copied URL")).catch(()=>alert("Copy failed"));
+});
+
+reposArea.addEventListener("click",e=>{
+  const btn=e.target.closest(".removeBtn");
+  if(btn){
+    const card=btn.closest(".repo-card");
+    removeUserRepo(card.dataset.url);
+    card.remove();
+    showToast("Repo removed");
+  }
+});
+
+backBtn.addEventListener("click",()=>{
+  viewingRepoUrl=null;
+  appsArea.innerHTML="";
+  reposArea.style.display="";
+  backBtn.style.display="none";
+  window.onscroll=null;
+  filteredApps = [];
+  loaded = 0;
+});
+
+// search!
+function indexRepoApps(repo) {
+  if (!repo.apps || !Array.isArray(repo.apps)) return;
+
+  repo.apps.forEach(app => {
+    allAppsIndex.push({
+      ...app,
+      __repoName: repo.name || "Repo"
+    });
   });
-  renderApps(filtered);
+}
+
+// import stuff
+const importModal = document.createElement("div");
+importModal.id = "importModal";
+importModal.style.cssText = `
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.55);
+backdrop-filter: blur(10px);
+display: none;
+align-items: center;
+justify-content: center;
+z-index: 10000;
+`;
+
+importModal.innerHTML = `
+  <div class="box" style="
+    background: var(--card);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 10px;
+    width: min(90%, 360px);
+  ">
+    <input id="importModalInput" type="url"
+      placeholder="Paste repo JSON URL…"
+      style="
+        flex:1;
+        padding:12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.06);
+        background:rgba(255,255,255,0.03);
+        color:var(--text)
+      ">
+    <button id="importModalBtn"
+      style="
+        padding:12px 16px;
+        border-radius:12px;
+        border:0;
+        background:var(--accent);
+        color:#fff;
+        font-weight:700;
+        cursor:pointer
+      ">
+      Import
+    </button>
+  </div>
+`;
+
+document.body.appendChild(importModal);
+
+const importModalInput = document.getElementById("importModalInput");
+const importModalBtn = document.getElementById("importModalBtn");
+
+importModalBtn.addEventListener("click", async () => {
+  const url = importModalInput.value.trim();
+  if (!url) return;
+  showToast("Importing repo…");
+  let repo = await fetchUserRepo(url);
+  let useProxy = false;
+  if (!repo) {
+    repo = await fetchUserRepo(url, true);
+    useProxy = true;
+  }
+  if (!repo) {
+    showToast("Invalid repo", 2000);
+    return;
+  }
+  renderRepoCard(repo, url, useProxy, true);
+  saveUserRepo({ url, useProxy });
+
+  importModalInput.value = "";
+  importModal.style.display = "none";
+  showToast("Repo imported!");
+});
+
+importBtn.addEventListener("click", () => {
+  importModal.style.display = "flex";
+  importModalInput.focus();
+});
+
+importModal.addEventListener("click", e => {
+  if (e.target === importModal) {
+    importModal.style.display = "none";
+  }
+});
+
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    importModal.style.display = "none";
+  }
 });
 
 loadRepos().then(() => {
-  (async ()=>{
-    for(const r of getUserRepos()){
-      const repo=await fetchUserRepo(r.url,r.useProxy);
-      if(repo) renderRepoCard(repo,r.url,r.useProxy,true);
+  (async () => {
+    for (const r of getUserRepos()) {
+      const repo = await fetchUserRepo(r.url, r.useProxy);
+      if (repo) {
+        renderRepoCard(repo, r.url, r.useProxy, true);
+        indexRepoApps(repo);
+      }
     }
   })();
 });
+
