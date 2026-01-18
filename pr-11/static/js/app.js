@@ -211,7 +211,7 @@ function renderApps(apps, append = false, showRepo = false) {
   }
   if (!append) appsArea.innerHTML = "";
 
-  apps.forEach(app => {
+  apps.forEach((app, idx) => {
     const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
     const version = latest.version || app.version || "";
     const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
@@ -221,12 +221,13 @@ function renderApps(apps, append = false, showRepo = false) {
     if (sizeBytes > 1024*1024) sizeText = (sizeBytes/(1024*1024)).toFixed(2)+" MB";
     else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
     else if (sizeBytes > 0) sizeText = sizeBytes+" B";
-    const repoNameHtml = app.__repoName ? `<div class="repo-meta">From: ${app.__repoName}</div>` : "";
+    const repoNameHtml = app.__repoName ? `<div class="subtitle">From: ${app.__repoName}</div>` : "";
 
     const card = document.createElement("div");
     card.className = "card";
     card.style.opacity = 0;
     card.style.transition = "opacity 0.4s ease";
+
     card.innerHTML = `
       <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""></div>
       <div class="title">${app.name || ""}</div>
@@ -240,8 +241,8 @@ function renderApps(apps, append = false, showRepo = false) {
     `;
     appsArea.appendChild(card);
 
-    // fadein
-    setTimeout(() => card.style.opacity = 1, 20);
+    // fadein sequenziale
+    setTimeout(() => card.style.opacity = 1, idx * 50);
   });
 }
 
@@ -345,20 +346,15 @@ importModal.innerHTML = `
 `;
 
 document.body.appendChild(importModal);
-
-// fade
 importModal.style.opacity = 0;
 importModal.style.transition = "opacity 0.3s";
 
-// open modal
 importBtn.addEventListener("click", () => {
   importModal.style.display = "flex";
   importModalInput.focus();
-  // timeout for the transition
   setTimeout(() => importModal.style.opacity = 1, 10);
 });
 
-// close modal
 importModal.addEventListener("click", e => {
   if (e.target === importModal) {
     importModal.style.opacity = 0;
@@ -366,7 +362,6 @@ importModal.addEventListener("click", e => {
   }
 });
 
-// esc close
 window.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     importModal.style.opacity = 0;
@@ -374,7 +369,6 @@ window.addEventListener("keydown", e => {
   }
 });
 
-// close with fadee after import
 importModalBtn.addEventListener("click", async () => {
   const url = importModalInput.value.trim();
   if (!url) return;
@@ -392,7 +386,6 @@ importModalBtn.addEventListener("click", async () => {
   renderRepoCard(repo, url, useProxy, true);
   saveUserRepo({ url, useProxy });
 
-  // fade out
   importModal.style.opacity = 0;
   setTimeout(() => importModal.style.display = "none", 300);
 
@@ -411,4 +404,3 @@ loadRepos().then(() => {
     }
   })();
 });
-
