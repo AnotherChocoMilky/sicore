@@ -174,21 +174,6 @@ h1 {
   justify-content: flex-end;
 }
 
-.repo-actions button {
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  flex: 0 0 auto;
-  white-space: nowrap;
-  transition: background 0.2s, border 0.2s;
-}
-
 .repo-actions button.copyBtn {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.10);
@@ -228,20 +213,6 @@ h1 {
   background: rgba(255,255,255,0.05);
 }
 
-#searchBar button#importBtn {
-  padding: 0 12px;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: var(--accent);
-  color: #fff;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 10px 22px rgba(10,132,255,0.16);
-  transition: background 0.2s, border 0.2s;
-}
-#searchBar button#importBtn:hover { background: #096ce6; }
-
 /* apps */
 #apps {
   display: grid;
@@ -252,11 +223,81 @@ h1 {
   max-width: 1100px;
   margin: 18px auto;
 }
+
+/* buttons */
+.download,
+.repo-actions button.openBtn,
+#searchBar button#importBtn,
+#addRepoBtn {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.download:hover,
+.repo-actions button.openBtn:hover,
+#searchBar button#importBtn:hover,
+#addRepoBtn:hover {
+  background: var(--accent);
+}
+
+.download::after,
+.repo-actions button.openBtn::after,
+#searchBar button#importBtn::after,
+#addRepoBtn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.08);
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.download:hover::after,
+.repo-actions button.openBtn:hover::after,
+#searchBar button#importBtn:hover::after,
+#addRepoBtn:hover::after {
+  opacity: 1;
+}
+
+/* back button */
+#backBtn {
+  display: inline-block;
+  margin: 8px auto;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#backBtn:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* reflections */
 .card {
   position: relative;
   background: linear-gradient(180deg, rgba(28,28,32,0.90), rgba(28,28,32,0.78));
   border: 1px solid var(--stroke2);
-  border-radius: 16px;
+  border-radius: var(--radius);
   padding: 16px;
   text-align: center;
   box-shadow: var(--shadow);
@@ -267,33 +308,34 @@ h1 {
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* reflections */
+/* Riflessi sugli angoli */
 .card::before,
 .card::after {
   content: '';
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border: 2px solid rgba(255,255,255,0.08);
   border-radius: 12px;
   pointer-events: none;
 }
 
-/* right */
+/* angolo alto a destra */
 .card::before {
-  top: -1px;
-  right: -1px;
+  top: 2px;
+  right: 2px;
   border-left: none;
   border-bottom: none;
 }
 
-/* left */
+/* angolo basso a sinistra */
 .card::after {
-  bottom: -1px;
-  left: -1px;
+  bottom: 2px;
+  left: 2px;
   border-top: none;
   border-right: none;
 }
+
 
 .icon img {
   width: 72px;
@@ -317,21 +359,6 @@ h1 {
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(255,255,255,0.04);
 }
-
-.download {
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: var(--accent);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 900;
-  letter-spacing: -0.01em;
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 10px 22px rgba(10,132,255,0.14);
-  transition: transform 0.2s var(--ease);
-}
-.download:hover { transform: scale(0.95); }
 
 /* mobile */
 @media (max-width: 640px) {
