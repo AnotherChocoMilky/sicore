@@ -259,35 +259,41 @@ function renderApps(apps, append=false) {
     return;
   }
 
- if (!append) appsArea.innerHTML = "";
+  if (!append) appsArea.innerHTML = "";
 
-  apps.forEach(app => {
+  apps.forEach((app, i) => {
     const latest = (app.versions && app.versions.length) ? app.versions[0] : {};
     const version = latest.version || app.version || "";
     const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
     const downloadURL = app.downloadURL || latest.downloadURL || "#";
     const sizeBytes = latest.size || app.size || 0;
+
     let sizeText = "Unknown";
     if (sizeBytes > 1024*1024) sizeText = (sizeBytes/(1024*1024)).toFixed(2)+" MB";
     else if (sizeBytes > 1024) sizeText = (sizeBytes/1024).toFixed(2)+" KB";
     else if (sizeBytes > 0) sizeText = sizeBytes+" B";
-    const repoNameHtml = app.__repoName ? `<div class="repo-meta">From: ${app.__repoName}</div>` : "";
+
     const card = document.createElement("div");
     card.className = "card";
+
     card.innerHTML = `
-      <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""></div>
+      <div class="icon">
+        <img loading="lazy" src="${app.iconURL || ''}" alt="">
+      </div>
       <div class="title">${app.name || ""}</div>
       <div class="meta">
-        ${version?`<span class="version">v${version}</span>`:""}
+        ${version ? `<span class="version">v${version}</span>` : ""}
         <span class="size">${sizeText}</span>
       </div>
-      ${app.__repoName?`<div class="repo-meta">From: ${app.__repoName}</div>`:""}
-      <div class="subtitle">${app.subtitle||""}</div>
-      <a class="download" href="${app.downloadURL||"#"}" target="_blank">Download</a>
+      ${app.__repoName ? `<div class="repo-meta">From: ${app.__repoName}</div>` : ""}
+      <div class="subtitle">${desc}</div>
+      <a class="download" href="${downloadURL}" target="_blank">Download</a>
     `;
 
     appsArea.appendChild(card);
-    requestAnimationFrame(()=>setTimeout(()=>card.classList.add("show"),i*70));
+    requestAnimationFrame(() => {
+      setTimeout(() => card.classList.add("show"), i * 70);
+    });
   });
 }
 
@@ -418,6 +424,12 @@ importBtn.addEventListener("click",()=>{
   importModal.classList.add("show");
   importModal.style.display="flex";
   importModalInput.focus();
+});
+
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    importModal.style.display = "none";
+  }
 });
 
 /* ================= boot ================= */
