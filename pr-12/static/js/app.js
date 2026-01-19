@@ -57,7 +57,7 @@ let reposLoaded = false;
 
 async function loadRepos() {
   reposLoaded = false;
-  reposArea.style.display = "none";
+  reposArea.style.display = "block";
   reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
 
   try {
