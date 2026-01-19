@@ -54,6 +54,7 @@ const loadAllRepos = async (repos) => {
 /* ================= load global repos ================= */
 
 async function loadRepos() {
+  reposArea.style.display = "none";
   reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
 
   try {
@@ -62,6 +63,7 @@ async function loadRepos() {
 
     if (!globals.repos?.length) {
       reposArea.innerHTML = `<div class="loading-line">No libraries loaded.</div>`;
+      reposArea.style.display = "block";
       return;
     }
 
@@ -107,9 +109,10 @@ async function loadRepos() {
     });
 
     searchBar.style.display = "flex";
-
+    reposArea.style.display = "block";
   } catch {
     reposArea.innerHTML = `<div class="loading-line">Failed to load libraries.</div>`;
+    reposArea.style.display = "block";
   }
 }
 
