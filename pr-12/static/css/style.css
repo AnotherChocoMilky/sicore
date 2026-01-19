@@ -20,22 +20,23 @@
 html, body {
   width: 100%;
   overflow-x: hidden;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(900px 360px at 20% -10%, rgba(10,132,255,.14), transparent 55%),
-    radial-gradient(800px 340px at 90% 0%, rgba(255,255,255,.06), transparent 60%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   margin: 0;
   padding: 0;
 }
 
-
-html {
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 360px at 20% -10%, rgba(10,132,255,.14), transparent 55%),
+    radial-gradient(800px 340px at 90% 0%, rgba(255,255,255,.06), transparent 60%);
   background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 /* header */
@@ -248,23 +249,24 @@ button:active,
   overflow: hidden;
   border-radius: var(--radius);
   margin-bottom: 10px;
-  background: rgba(255,255,255,.04);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: none;
+  display: grid;
+  place-items: center;
 }
-
 
 .card .icon img {
-  max-width: 72%;
-  max-height: 72%;
-  width: auto;
-  height: auto;
+  width: auto !important;
+  height: auto !important;
+  max-width: 64px;
+  max-height: 64px;
+  contain: strict;
   object-fit: contain;
   display: block;
+  image-rendering: auto;
 }
 
-/* spacing FIX */
+
+/* spacing fix */
 .card .title {
   font-weight: 700;
   font-size: 14px;
