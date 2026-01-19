@@ -21,8 +21,8 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   background:
-    radial-gradient(1200px 500px at -10% -10%, rgba(10,132,255,.12), transparent 70%),
-    radial-gradient(1200px 500px at 110% -10%, rgba(255,255,255,.06), transparent 75%),
+    radial-gradient(900px 360px at 20% -10%, rgba(10,132,255,.14), transparent 55%),
+    radial-gradient(800px 340px at 90% 0%, rgba(255,255,255,.06), transparent 60%);
     var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -255,6 +255,8 @@ button:active,
   height: 100%;
   object-fit: contain;
   display: block;
+
+  transform: scale(1);
 }
 
 /* spacing FIX */
