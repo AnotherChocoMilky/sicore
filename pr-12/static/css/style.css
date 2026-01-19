@@ -57,6 +57,13 @@ header {
   transition: transform .45s var(--ease);
 }
 
+
+.loading-line {
+  color: #999;
+  text-align: center;
+  padding: 14px;
+}
+
 header.unpin {
   transform: translateY(-120%);
 }
