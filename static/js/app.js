@@ -234,7 +234,6 @@ async function openRepo(url,useProxy){
 }
 
 /* ================= search + infinite scroll ================= */
-
 function renderNextBatch() {
   const batchSize = 20;
   const nextApps = filteredApps.slice(loaded, loaded + batchSize);
@@ -275,11 +274,12 @@ function applySearch() {
   renderNextBatch();
 
   if (!viewingRepoUrl) {
-  window.onscroll = () => {
-    if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 120){
-      if(loaded < filteredApps.length) renderNextBatch();
-    }
-  };
+    window.onscroll = () => {
+      if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 120){
+        if(loaded < filteredApps.length) renderNextBatch();
+      }
+    };
+  }
 }
 
 let searchTimeout;
