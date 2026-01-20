@@ -1,14 +1,14 @@
 const CACHE = "chocomilkyx-v1";
 
 const ASSETS = [
-  '/chocomilkyX/',
-  '/chocomilkyX/index.html',
-  '/chocomilkyX/static/style.css',
-  '/chocomilkyX/static/app.js',
-  '/chocomilkyX/static/manifest.json',
-  '/chocomilkyX/back/global-repos.json',
-  '/chocomilkyX/static/icons/icon-192.png',
-  '/chocomilkyX/static/icons/icon-512.png'
+  './',
+  './index.html',
+  './static/style.css',
+  './static/app.js',
+  './static/manifest.json',
+  './back/global-repos.json',
+  './static/icons/icon-192.png',
+  './static/icons/icon-512.png'
 ];
 
 self.addEventListener("install", e => {
