@@ -1,4 +1,4 @@
-const CACHE = "chocomilkyx";
+const CACHE = "chocomilkyx-v1";
 
 const ASSETS = [
   '/chocomilkyX/',
@@ -7,8 +7,8 @@ const ASSETS = [
   '/chocomilkyX/static/app.js',
   '/chocomilkyX/static/manifest.json',
   '/chocomilkyX/back/global-repos.json',
-  '/chocomilkyX/icons/icon-192.png',
-  '/chocomilkyX/icons/icon-512.png'
+  '/chocomilkyX/static/icons/icon-192.png',
+  '/chocomilkyX/static/icons/icon-512.png'
 ];
 
 self.addEventListener("install", e => {
