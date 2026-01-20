@@ -17,6 +17,13 @@ let lastScrollY = 0;
 
 const proxy = "https://chocomilky-proxy.vercel.app/api/proxy?url=";
 
+/* ================= pwa =================== */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js");
+  });
+}
+
 /* ================= toast ================= */
 
 function showToast(msg, ms = 1500) {
