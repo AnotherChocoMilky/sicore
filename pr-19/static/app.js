@@ -128,19 +128,18 @@ sortSelect.addEventListener("change", () => {
 });
 
 /* helper for showing version when its time */
-function toggleVersionSort(show) {
-  const opt = sortSelect.querySelector('option[value="version"]');
-  if (opt) opt.style.display = show ? "" : "none";
+function toggleVersionSort({ show = false, inRepo = false, hasQuery = false } = {}) {
+  const optVersion = sortSelect.querySelector('option[value="version"]');
 
-  if (!show && currentSort === "version") {
-    currentSort = "newest";
-    sortSelect.value = "newest";
-  }
-
-  if (show) {
-    requestAnimationFrame(() => sortSelect.classList.add("show"));
+  if (inRepo) {
+    if (optVersion) optVersion.style.display = hasQuery ? "" : "none";
+    sortSelect.classList.add("show");
   } else {
-    sortSelect.classList.remove("show");
+    if (show) {
+      sortSelect.classList.add("show");
+    } else {
+      sortSelect.classList.remove("show");
+    }
   }
 }
 
@@ -328,34 +327,26 @@ function applySearch() {
       filteredApps=[];
       loaded=0;
       window.onscroll=null;
-      toggleVersionSort(false);
+      toggleVersionSort({ show: false });
       return;
     }
-    
+
     filteredApps = sortApps(base);
     loaded = 0;
     appsArea.innerHTML = "";
     renderNextBatch();
+    toggleVersionSort({ show: true, inRepo: true, hasQuery: false });
     return;
   }
 
   if (!viewingRepoUrl) reposArea.style.display = "none";
-  toggleVersionSort(true);
-  
-  filteredApps = sortApps(
-    base.filter(a => a.name?.toLowerCase().includes(q))
-  );
+
+  filteredApps = sortApps(base.filter(a => a.name?.toLowerCase().includes(q)));
   loaded = 0;
   appsArea.innerHTML = "";
   renderNextBatch();
 
-  if (!viewingRepoUrl) {
-    window.onscroll = () => {
-      if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 120){
-        if(loaded < filteredApps.length) renderNextBatch();
-      }
-    };
-  }
+  toggleVersionSort({ show: true, inRepo: viewingRepoUrl, hasQuery: true });
 }
 
 let searchTimeout;
