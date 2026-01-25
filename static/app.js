@@ -9,8 +9,6 @@ const header = document.querySelector("header");
 const sortSelect = document.getElementById("sortSelect");
 let currentSort = "newest";
 
-sortSelect.style.display = "none";
-
 let currentApps = [];
 let viewingRepoUrl = null;
 let allAppsIndex = [];
@@ -128,18 +126,19 @@ sortSelect.addEventListener("change", () => {
 });
 
 /* helper for showing version when its time */
-function toggleVersionSort({ show = false, inRepo = false, hasQuery = false } = {}) {
-  const optVersion = sortSelect.querySelector('option[value="version"]');
+function toggleVersionSort({ show, inRepo = false, hasQuery = false }) {
+  const opt = sortSelect.querySelector('option[value="version"]');
+  if (opt) opt.style.display = (inRepo && !hasQuery) ? "none" : "";
 
-  if (inRepo) {
-    if (optVersion) optVersion.style.display = hasQuery ? "" : "none";
+  if (!show && sortSelect.value === "version") {
+    currentSort = "newest";
+    sortSelect.value = "newest";
+  }
+
+  if (show) {
     sortSelect.classList.add("show");
   } else {
-    if (show) {
-      sortSelect.classList.add("show");
-    } else {
-      sortSelect.classList.remove("show");
-    }
+    sortSelect.classList.remove("show");
   }
 }
 
