@@ -21,7 +21,6 @@
   🔗 <strong>Live:</strong> <a href="https://chocomilkyX.vercel.app">https://chocomilkyX.vercel.app</a>
 </p>
 
-
 ---
 
 > [!note]
@@ -62,14 +61,18 @@ for other contributions, see the contributing file.
 
 ## selfhost it - 🚀 getting started
 
-### clone the repository
+### deploy with vercel
+<a align="center" href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgablilli%2FchocomilkyX%2Ftree%2Fmain&project-name=mychocomilky&repository-name=mychocomilky"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
+
+### local hosting
+#### clone the repository
 
 ```bash
 git clone https://github.com/gablilli/chocomilkyX.git
 cd chocomilkyX
 ````
 
-### run locally
+#### run locally
 
 open `index.html` directly in your browser
 or use a local server (recommended):
