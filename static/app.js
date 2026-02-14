@@ -26,7 +26,7 @@ appInfoModal.id = "appInfoModal";
 
 appInfoModal.innerHTML = `
   <div class="appinfo-box">
-    <button class="close">✕</button>
+    <button class="close" aria-label="Close"></button>
 
     <div class="appinfo-header">
       <img class="appicon">
@@ -42,9 +42,9 @@ appInfoModal.innerHTML = `
 
     <div class="screenshots"></div>
 
-    <div class="permissions"></div>
+    <div class="other-versions"></div>
 
-    <a class="download-btn" target="_blank">Download IPA</a>
+    <div class="permissions"></div>
   </div>
 `;
 
@@ -62,7 +62,7 @@ function openAppInfo(app) {
   meta.innerHTML = `
     <div><span>Bundle ID</span>${app.bundleIdentifier || app.bundleID || "-"}</div>
     <div><span>Version</span>${latest.version || "-"}</div>
-    <div><span>Published</span>${latest.versionDate || "-"}</div>
+    <div><span>Published</span>${latest.versionDate || latest.date || "-"}</div>
     <div><span>Size</span>${
       latest.size ? ((latest.size)/1024/1024).toFixed(2)+" MB" : "-"
     }</div>
@@ -73,11 +73,14 @@ function openAppInfo(app) {
 
   const shotsWrap = appInfoModal.querySelector(".screenshots");
   shotsWrap.innerHTML = "";
-  const shots = app.screenshots?.iphone || [];
+  const shots =
+    app.screenshots?.iphone ||
+    app.screenshotURLs ||
+    []; 
 
   shots.forEach(s => {
     const img = document.createElement("img");
-    img.src = s.imageURL;
+    img.src = typeof s === "string" ? s : s.imageURL;
     shotsWrap.appendChild(img);
   });
 
@@ -87,10 +90,22 @@ function openAppInfo(app) {
     ? `<h3>Permissions</h3>` + ent.map(e => `<span>${e}</span>`).join("")
     : "";
 
-  appInfoModal.querySelector(".download-btn").href =
-    latest.downloadURL || app.downloadURL || "#";
-
   appInfoModal.classList.add("show");
+}
+
+/* previous versions */
+const versionsWrap = appInfoModal.querySelector(".other-versions");
+versionsWrap.innerHTML = "";
+
+const versions = app.versions || [];
+if (versions.length > 1) {
+  versionsWrap.innerHTML =
+    `<h3>Other versions</h3>` +
+    versions.slice(1).map(v => `
+      <a href="${v.downloadURL}" target="_blank">
+        v${v.version} · ${v.date || ""}
+      </a>
+    `).join("");
 }
 
 /* close handlers */
@@ -102,7 +117,6 @@ window.addEventListener("keydown", e => {
     appInfoModal.classList.remove("show");
   }
 });
-
 
 /* ================= pwa =================== */
 if ("serviceWorker" in navigator) {
