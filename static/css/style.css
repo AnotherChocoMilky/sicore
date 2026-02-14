@@ -450,16 +450,21 @@ button:active,
   gap: 12px;
   overflow-x: auto;
   margin: 16px 0;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  scroll-snap-type: x mandatory;
+  padding-inline: 0;
 }
 
 /* wrapper */
 .screenshots img {
-  width: 100%;
-  max-height: 360px;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  object-fit: contain;
   display: block;
+  width: auto;
+  max-height: 360px;
+  border-radius: 18px; 
+  box-shadow: var(--shadow);
+  object-fit: contain; 
+  scroll-snap-align: start;
 }
 
 /* 1 screenshot */
