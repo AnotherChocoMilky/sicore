@@ -19,6 +19,91 @@ let lastScrollY = 0;
 
 const proxy = "https://chocomilkyX.vercel.app/api/proxy?url=";
 
+/* ================= app detail =================== */
+
+const appInfoModal = document.createElement("div");
+appInfoModal.id = "appInfoModal";
+
+appInfoModal.innerHTML = `
+  <div class="appinfo-box">
+    <button class="close">✕</button>
+
+    <div class="appinfo-header">
+      <img class="appicon">
+      <div>
+        <h2 class="appname"></h2>
+        <div class="developer"></div>
+      </div>
+    </div>
+
+    <div class="meta-grid"></div>
+
+    <div class="description"></div>
+
+    <div class="screenshots"></div>
+
+    <div class="permissions"></div>
+
+    <a class="download-btn" target="_blank">Download IPA</a>
+  </div>
+`;
+
+document.body.appendChild(appInfoModal);
+
+function openAppInfo(app) {
+  const latest = app.versions?.[0] || app;
+
+  appInfoModal.querySelector(".appicon").src = app.iconURL || "";
+  appInfoModal.querySelector(".appname").textContent = app.name || "";
+  appInfoModal.querySelector(".developer").textContent =
+    app.developerName?.trim() || app.__repoName || "Unknown developer";
+
+  const meta = appInfoModal.querySelector(".meta-grid");
+  meta.innerHTML = `
+    <div><span>Bundle ID</span>${app.bundleIdentifier || app.bundleID || "-"}</div>
+    <div><span>Version</span>${latest.version || "-"}</div>
+    <div><span>Published</span>${latest.versionDate || "-"}</div>
+    <div><span>Size</span>${
+      latest.size ? ((latest.size)/1024/1024).toFixed(2)+" MB" : "-"
+    }</div>
+  `;
+
+  appInfoModal.querySelector(".description").textContent =
+    app.localizedDescription || "No description provided.";
+
+  const shotsWrap = appInfoModal.querySelector(".screenshots");
+  shotsWrap.innerHTML = "";
+  const shots = app.screenshots?.iphone || [];
+
+  shots.forEach(s => {
+    const img = document.createElement("img");
+    img.src = s.imageURL;
+    shotsWrap.appendChild(img);
+  });
+
+  const permWrap = appInfoModal.querySelector(".permissions");
+  const ent = app.appPermissions?.entitlements || [];
+  permWrap.innerHTML = ent.length
+    ? `<h3>Permissions</h3>` + ent.map(e => `<span>${e}</span>`).join("")
+    : "";
+
+  appInfoModal.querySelector(".download-btn").href =
+    latest.downloadURL || app.downloadURL || "#";
+
+  appInfoModal.classList.add("show");
+}
+
+/* close handlers */
+appInfoModal.querySelector(".close").onclick = () =>
+  appInfoModal.classList.remove("show");
+
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape" && appInfoModal.classList.contains("show")) {
+    appInfoModal.classList.remove("show");
+  }
+});
+
+
 /* ================= pwa =================== */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -397,6 +482,15 @@ function renderApps(apps, append=false) {
       <div class="subtitle">${desc}</div>
       <a class="download" href="${downloadURL}" target="_blank">Download</a>
     `;
+  
+      card.addEventListener("click", e => {
+    if (
+      e.target.closest(".download") ||
+      e.target.closest("a")
+    ) return;
+  
+    openAppInfo(app);
+  });
 
     appsArea.appendChild(card);
     requestAnimationFrame(() => setTimeout(() => card.classList.add("show"), i * 70));
@@ -529,9 +623,9 @@ importModal.addEventListener("click", e => {
   if (e.target === importModal) closeImportModal();
 });
 
-window.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeImportModal();
-});
+if (e.key === "Escape" && importModal.classList.contains("show")) {
+  closeImportModal();
+}
 
 /* ================= boot ================= */
 
