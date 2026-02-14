@@ -342,6 +342,94 @@ button:active,
   flex-shrink: 0;
 }
 
+/* app detail */
+#appInfoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(16px);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s var(--ease);
+}
+
+#appInfoModal.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.appinfo-box {
+  max-width: 720px;
+  margin: 40px auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
+}
+
+.appinfo-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.appinfo-header img {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.meta-grid div span {
+  display: block;
+  font-size: 11px;
+  color: var(--subtle);
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.screenshots {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.screenshots img {
+  height: 360px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.permissions span {
+  display: inline-block;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.05);
+  margin: 4px 4px 0 0;
+}
+
+.download-btn {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  padding: 12px;
+}
+
 /* download */
 .card .download {
   margin-top: auto;
