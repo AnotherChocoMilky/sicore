@@ -226,7 +226,7 @@ h1 {
 button,
 #importBtn,
 #importModal button,
-.card .download {
+.download {
   appearance: none;
   border: none;
   border-radius: 999px;
@@ -422,12 +422,16 @@ button:active,
 .screenshots {
   display: grid;
   gap: 12px;
+  overflow-x: auto;
+  margin-bottom: 16px;
   margin-top: 16px;
 }
 
 .screenshots img {
+  height: 360px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
   width: 100%;
-  border-radius: 14px;
   object-fit: cover;
 }
 
@@ -487,16 +491,6 @@ button:active,
   font-size: 13px;
 }
 
-/* same button as the cards */
-.version-row .download {
-  padding: 8px 14px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-}
-
 .permissions span {
   display: inline-block;
   font-size: 11px;
@@ -504,16 +498,6 @@ button:active,
   border-radius: 999px;
   background: rgba(255,255,255,.05);
   margin: 4px 4px 0 0;
-}
-
-/* download */
-.card .download {
-  margin-top: auto;
-  font-size: 13px;
-  padding: 9px;
-  text-align: center;
-  border-radius: var(--radius);
-  text-decoration: none;
 }
 
 /* back button */
