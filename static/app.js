@@ -84,6 +84,20 @@ function openAppInfo(app) {
     shotsWrap.appendChild(img);
   });
 
+  /* previous versions */
+  const versionsWrap = appInfoModal.querySelector(".other-versions");
+  versionsWrap.innerHTML = "";
+  
+  const versions = app.versions || [];
+  if (versions.length > 1) {
+    versionsWrap.innerHTML =
+      `<h3>Other versions</h3>` +
+      versions.slice(1).map(v => `
+        <a href="${v.downloadURL}" target="_blank">
+          v${v.version} · ${v.date || ""}
+        </a>
+      `).join("");
+    
   const permWrap = appInfoModal.querySelector(".permissions");
   const ent = app.appPermissions?.entitlements || [];
   permWrap.innerHTML = ent.length
@@ -91,21 +105,6 @@ function openAppInfo(app) {
     : "";
 
   appInfoModal.classList.add("show");
-}
-
-/* previous versions */
-const versionsWrap = appInfoModal.querySelector(".other-versions");
-versionsWrap.innerHTML = "";
-
-const versions = app.versions || [];
-if (versions.length > 1) {
-  versionsWrap.innerHTML =
-    `<h3>Other versions</h3>` +
-    versions.slice(1).map(v => `
-      <a href="${v.downloadURL}" target="_blank">
-        v${v.version} · ${v.date || ""}
-      </a>
-    `).join("");
 }
 
 /* close handlers */
