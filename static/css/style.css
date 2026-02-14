@@ -463,7 +463,7 @@ button:active,
   max-height: 360px;
   border-radius: 18px; 
   box-shadow: var(--shadow);
-  object-fit: contain; 
+  object-fit: cover; 
   scroll-snap-align: start;
 }
 
