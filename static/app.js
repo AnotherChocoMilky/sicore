@@ -70,15 +70,20 @@ function openAppInfo(app) {
 
   const shotsWrap = appInfoModal.querySelector(".screenshots");
   shotsWrap.innerHTML = "";
+  
   const shots =
     app.screenshots?.iphone ||
     app.screenshotURLs ||
-    []; 
-
+    [];
+  
   shots.forEach(s => {
     const src = typeof s === "string" ? s : s.imageURL;
     const img = new Image();
-    img.onload = () => shotsWrap.appendChild(img);
+    img.onload = () => {
+      if (shotsWrap.parentElement.classList.contains("show")) {
+        shotsWrap.appendChild(img);
+      }
+    };
     img.onerror = () => {};
     img.src = src;
   });
