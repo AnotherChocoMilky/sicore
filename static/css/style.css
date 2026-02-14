@@ -376,6 +376,24 @@ button:active,
   align-items: center;
 }
 
+#appInfoModal .close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 0;
+  cursor: pointer;
+}
+
+#appInfoModal .close::before {
+  content: "×";
+  font-size: 20px;
+  color: #bbb;
+}
+
 .appinfo-header img {
   width: 72px;
   height: 72px;
@@ -421,13 +439,6 @@ button:active,
   border-radius: 999px;
   background: rgba(255,255,255,.05);
   margin: 4px 4px 0 0;
-}
-
-.download-btn {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  padding: 12px;
 }
 
 /* download */
