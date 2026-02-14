@@ -623,9 +623,11 @@ importModal.addEventListener("click", e => {
   if (e.target === importModal) closeImportModal();
 });
 
-if (e.key === "Escape" && importModal.classList.contains("show")) {
-  closeImportModal();
-}
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape" && importModal.classList.contains("show")) {
+    closeImportModal();
+  }
+});
 
 /* ================= boot ================= */
 
