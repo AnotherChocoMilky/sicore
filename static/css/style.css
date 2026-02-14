@@ -248,16 +248,20 @@ button:active,
 
 /* download */
 .download {
-  display: inline-block;
-  padding: 10px 18px;
-  border-radius: 999px;
+  margin-top: auto;
+  font-size: 13px;
+  padding: 9px 14px;
+  text-align: center;
+  border-radius: var(--radius);
+  text-decoration: none;
   background: var(--accent);
   color: #fff;
   font-weight: 700;
-  text-decoration: none;
-  text-align: center;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(10,132,255,.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(10,132,255,.22);
   transition:
     transform .22s var(--ease),
     box-shadow .22s var(--ease),
@@ -266,7 +270,7 @@ button:active,
 
 .download:active {
   transform: scale(.94);
-  box-shadow: 0 6px 14px rgba(10,132,255,.32);
+  box-shadow: 0 4px 12px rgba(10,132,255,.32);
 }
 
 #importBtn {
