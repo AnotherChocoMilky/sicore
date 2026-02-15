@@ -26,6 +26,7 @@ appInfoModal.id = "appInfoModal";
 
 appInfoModal.innerHTML = `
   <div class="appinfo-box">
+    <button class="close" aria-label="Close"></button>
     <div class="appinfo-header">
       <img class="appicon">
       <div>
@@ -123,6 +124,11 @@ appInfoModal.addEventListener("click", e => {
   if (e.target === appInfoModal) {
     appInfoModal.classList.remove("show");
   }
+});
+
+/* X */
+appInfoModal.querySelector(".close").addEventListener("click", () => {
+  appInfoModal.classList.remove("show");
 });
 
 window.addEventListener("keydown", e => {
