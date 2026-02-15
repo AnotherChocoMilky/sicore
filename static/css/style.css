@@ -417,16 +417,17 @@ button:active,
   right: 12px;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
   cursor: pointer;
-  z-index: 2;
+  z-index: 10;
 }
-
 
 #appInfoModal .close::before {
   content: "×";
