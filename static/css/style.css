@@ -399,7 +399,7 @@ button:active,
 .appinfo-header {
   display: flex;
   gap: 14px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 #appInfoModal .close {
@@ -443,6 +443,7 @@ button:active,
   font-size: 13px;
   color: var(--subtle);
   margin-top: 2px;
+  line-height: 1.2;
 }
 
 .description {
@@ -480,10 +481,11 @@ button:active,
 
 /* 1 screenshot */
 .screenshots:has(img:only-child) {
-  grid-template-columns: 1fr;
+  display: flex;
+  justify-content: center;
   max-width: 360px;
   margin-inline: auto;
-  justify-content: center;
+  margin-right: 0;
 }
 
 /* 2 screenshot */
