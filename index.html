@@ -1,23 +1,1200 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>chocomilkyX iPA library</title>
-<link rel="stylesheet" href="/static/css/style.css">
-<link rel="manifest" href="/static/manifest.json">
-<meta name="theme-color" content="#0a84ff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="chocomilkyX">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SideCore Repos</title>
+<meta name="theme-color" content="#0a84ff"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="SideCore"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #050508;
+  --card: rgba(22, 22, 28, 0.78);
+  --card-hover: rgba(34, 34, 44, 0.92);
+  --accent: #0a84ff;
+  --accent-light: #3ea8ff;
+  --accent-glow: rgba(10, 132, 255, 0.3);
+  --accent-soft: rgba(10, 132, 255, 0.1);
+  --text: #f5f5f7;
+  --text-secondary: #a1a1aa;
+  --subtle: #71717a;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+  --shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 60px rgba(10, 132, 255, 0.08);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --t-fast: 0.2s var(--ease);
+  --t-med: 0.4s var(--ease);
+  --t-slow: 0.6s var(--ease);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 900px 400px at 20% -8%, rgba(10, 132, 255, 0.07), transparent 60%),
+    radial-gradient(ellipse 700px 350px at 80% 0%, rgba(130, 80, 223, 0.04), transparent 55%),
+    radial-gradient(ellipse 500px 250px at 50% 105%, rgba(10, 132, 255, 0.03), transparent 50%);
+  animation: ambientShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes ambientShift {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.85; }
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ══════════════ HEADER ══════════════ */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  background: rgba(5, 5, 8, 0.65);
+  border-bottom: 1px solid var(--border);
+  transition: transform 0.5s var(--ease), opacity 0.5s var(--ease);
+}
+
+header.unpin {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+header .logo-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.4));
+  transition: transform 0.4s var(--ease-spring);
+}
+
+header:hover .logo-icon {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+header h1 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ══════════════ CONTAINER ══════════════ */
+#container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ══════════════ SEARCH BAR ══════════════ */
+#searchBar {
+  width: 100%;
+  display: none;
+  gap: 10px;
+  align-items: center;
+  animation: slideDown 0.5s var(--ease) both;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1;
+}
+
+.searchWrap .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  height: 17px;
+  color: var(--subtle);
+  pointer-events: none;
+  transition: color 0.3s var(--ease), transform 0.3s var(--ease-spring);
+}
+
+#searchInput:focus ~ .search-icon {
+  color: var(--accent);
+  transform: translateY(-50%) scale(1.1);
+}
+
+#searchInput {
+  width: 100%;
+  padding: 13px 115px 13px 42px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  font-size: 15px;
+  font-family: var(--font);
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+#searchInput::placeholder {
+  color: var(--subtle);
+  font-weight: 400;
+  transition: color 0.3s;
+}
+
+#searchInput:focus {
+  border-color: var(--accent);
+  background: rgba(10, 132, 255, 0.03);
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 4px 20px rgba(10, 132, 255, 0.06);
+}
+
+#searchInput:focus::placeholder {
+  color: rgba(113, 113, 122, 0.6);
+}
+
+#sortSelect {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 36px;
+  border-radius: var(--radius-xs);
+  padding: 0 28px 0 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease), background 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%2371717a' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+#sortSelect:hover { background: rgba(255, 255, 255, 0.09); }
+#sortSelect:focus { outline: none; border-color: var(--accent); }
+#sortSelect.show { opacity: 1; pointer-events: auto; }
+
+#importBtn {
+  min-height: 46px;
+  min-width: 46px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+#importBtn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.12) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#importBtn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+#importBtn:hover::after { opacity: 1; }
+
+#importBtn:active {
+  transform: scale(0.92);
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+#importBtn svg {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════ REPO CARDS ══════════════ */
+.repo-card {
+  display: flex;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(180%);
+  align-items: center;
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  cursor: default;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.25s, border-color 0.25s, box-shadow 0.35s;
+}
+
+.repo-card.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.repo-card:hover {
+  background: var(--card-hover);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow), var(--shadow-glow);
+}
+
+.repo-card img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.repo-card:hover img {
+  transform: scale(1.06);
+}
+
+.repo-info { flex: 1; min-width: 0; }
+
+.repo-name {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.repo-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ══════════════ BUTTONS ══════════════ */
+button, .download {
+  appearance: none;
+  border: none;
+  font-family: var(--font);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease), background 0.2s, filter 0.2s, border-color 0.2s;
+}
+
+button:active { transform: scale(0.93); }
+
+.repo-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.repo-actions button {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: var(--radius-xs);
+  min-height: 36px;
+  font-weight: 600;
+}
+
+.repo-actions .openBtn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(10,132,255,0.2);
+}
+
+.repo-actions .openBtn:hover {
+  box-shadow: 0 5px 20px rgba(10,132,255,0.35);
+  transform: translateY(-1px);
+}
+
+.repo-actions .copyBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.repo-actions .copyBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+.repo-actions .removeBtn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+.repo-actions .removeBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ══════════════ APP GRID ══════════════ */
+#apps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+/* ══════════════ APP CARDS ══════════════ */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 14px 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(180%);
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), background 0.25s, border-color 0.25s, box-shadow 0.4s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(10,132,255,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.card:hover::before { opacity: 1; }
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.card:hover {
+  background: var(--card-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), var(--shadow-glow);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.card .icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s;
+}
+
+.card:hover .icon {
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
+.card .icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card .title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 3px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card .app-developer {
+  font-size: 11.5px;
+  color: var(--accent-light);
+  font-weight: 600;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  opacity: 0.85;
+}
+
+.meta {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.meta .version, .meta .size {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.card .repo-meta {
+  font-size: 10.5px;
+  color: var(--subtle);
+  font-weight: 600;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+.card .subtitle {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.download {
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(10,132,255,0.2);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.3s var(--ease), background 0.2s;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.download::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.download:hover {
+  box-shadow: 0 6px 24px rgba(10,132,255,0.35);
+  transform: translateY(-1px);
+}
+
+.download:hover::after { opacity: 1; }
+
+.download:active {
+  transform: scale(0.94);
+}
+
+.download svg {
+  width: 14px;
+  height: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.download span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════ BACK BUTTON ══════════════ */
+#backBtn {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.3s var(--ease-spring);
+  animation: fadeUp 0.4s var(--ease) both;
+}
+
+#backBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  border-color: var(--border-hover);
+  transform: translateX(-3px);
+}
+
+#backBtn:active { transform: scale(0.94); }
+
+#backBtn svg { width: 15px; height: 15px; }
+
+/* ══════════════ LOADING ══════════════ */
+.loading-line {
+  text-align: center;
+  padding: 48px 14px;
+  color: var(--subtle);
+  font-size: 14px;
+  font-weight: 500;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--card) 25%, rgba(40,40,50,0.6) 50%, var(--card) 75%);
+  background-size: 200% 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  height: 260px;
+  animation: skeletonWave 1.8s ease-in-out infinite;
+}
+
+@keyframes skeletonWave {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ══════════════ TOAST ══════════════ */
+#toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  background: rgba(22, 22, 28, 0.96);
+  backdrop-filter: blur(24px) saturate(180%);
+  color: var(--text);
+  padding: 13px 26px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 99999;
+  display: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 0.5px 0 rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  animation: toastIn 0.4s var(--ease-bounce) forwards;
+  letter-spacing: -0.01em;
+}
+
+@keyframes toastIn {
+  from { transform: translateX(-50%) translateY(24px) scale(0.9); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+
+/* ══════════════ APP INFO MODAL ══════════════ */
+#appInfoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(24px) saturate(150%);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#appInfoModal.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.appinfo-box {
+  max-width: 660px;
+  margin: 36px auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  transform: scale(0.92) translateY(20px);
+  opacity: 0;
+  transition: transform 0.5s var(--ease), opacity 0.5s var(--ease);
+}
+
+#appInfoModal.show .appinfo-box {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.appinfo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.appinfo-header img {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.appinfo-header img:hover {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.appinfo-header .appname {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.developer {
+  font-size: 13px;
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+#appInfoModal .close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.3s var(--ease-spring), color 0.25s;
+  padding: 0;
+}
+
+#appInfoModal .close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+  transform: scale(1.08) rotate(90deg);
+}
+
+#appInfoModal .close:active { transform: scale(0.88); }
+
+#appInfoModal .close svg { width: 15px; height: 15px; }
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.meta-grid div {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 13px 15px;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.meta-grid div:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-hover);
+}
+
+.meta-grid div span {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.meta-grid div strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.screenshots {
+  display: grid;
+  gap: 10px;
+  overflow-x: auto;
+  margin: 20px 0;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 4px;
+}
+
+.screenshots::-webkit-scrollbar { display: none; }
+
+.screenshots img {
+  display: block;
+  height: 340px;
+  width: auto;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  object-fit: cover;
+  scroll-snap-align: start;
+  border: 1px solid var(--border);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s;
+}
+
+.screenshots img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+}
+
+.screenshots:has(img:only-child) {
+  display: flex;
+  justify-content: center;
+}
+
+.screenshots:has(img:nth-child(2):last-child) {
+  grid-template-columns: repeat(2, auto);
+  max-width: 460px;
+  margin-inline: auto;
+  justify-content: center;
+}
+
+.screenshots:has(img:nth-child(3):last-child) {
+  grid-template-columns: repeat(3, auto);
+  max-width: 660px;
+  margin-inline: auto;
+  justify-content: center;
+}
+
+.versions {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.versions h3 {
+  margin-bottom: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.version-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.version-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-hover);
+}
+
+.version-badge {
+  background: rgba(255, 255, 255, 0.92);
+  color: #000;
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.version-row .download {
+  width: auto;
+  padding: 7px 16px;
+  font-size: 12px;
+}
+
+.permissions { margin-top: 16px; }
+
+.permissions h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.permissions span {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+  margin: 3px 4px 3px 0;
+  color: var(--text-secondary);
+}
+
+/* ══════════════ IMPORT MODAL ══════════════ */
+#importModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+
+#importModal.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#importModal .box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px;
+  border-radius: 22px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(90%, 420px);
+  transform: scale(0.9) translateY(16px);
+  opacity: 0;
+  transition: transform 0.45s var(--ease-spring), opacity 0.4s var(--ease);
+}
+
+#importModal.show .box {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+#importModal .box h3 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+#importModal .box p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: -6px;
+}
+
+.import-row {
+  display: flex;
+  gap: 10px;
+}
+
+#importModalInput {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+#importModalInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+#importModalBtn {
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,132,255,0.25);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.3s var(--ease);
+  white-space: nowrap;
+}
+
+#importModalBtn:hover {
+  box-shadow: 0 6px 24px rgba(10,132,255,0.4);
+  transform: translateY(-1px);
+}
+
+#importModalBtn:active { transform: scale(0.94); }
+
+/* ══════════════ FOOTER ══════════════ */
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 36px 20px 44px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--subtle);
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.footer span {
+  opacity: 0.7;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+  transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.3s var(--ease-spring), box-shadow 0.3s;
+}
+
+.github-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.github-link svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+/* ══════════════ ANIMATIONS ══════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════ RESPONSIVE ══════════════ */
+@media (max-width: 640px) {
+  #container { padding: 14px 12px 32px; }
+  header { padding: 0 16px; height: 54px; }
+  header h1 { font-size: 15px; }
+  header .logo-icon { width: 18px; height: 18px; }
+
+  #apps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card { padding: 16px 10px 14px; }
+  .card .icon { width: 54px; height: 54px; border-radius: 14px; }
+  .card .title { font-size: 13px; }
+
+  .repo-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .repo-card > img { align-self: flex-start; }
+
+  .repo-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .repo-actions button { flex: 1; text-align: center; }
+
+  .appinfo-box {
+    margin: 12px 8px;
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .meta-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .screenshots img { height: 260px; }
+
+  #importModal .box { width: 92%; padding: 22px; }
+  .import-row { flex-direction: column; }
+
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px 16px 36px;
+  }
+}
+
+@media (max-width: 380px) {
+  #apps { gap: 8px; }
+  .card { padding: 14px 8px 12px; }
+  .card .icon { width: 48px; height: 48px; }
+  .card .title { font-size: 12px; }
+  .card .app-developer { font-size: 10.5px; }
+  .meta { gap: 4px; }
+  .meta .version, .meta .size { font-size: 10px; padding: 2px 6px; }
+  .download { padding: 8px 12px; font-size: 12px; }
+}
+</style>
 </head>
 <body>
-<header><h1>chocomilkyX iPA library</h1></header>
+
+<header>
+  <svg class="logo-icon" viewBox="0 0 256 315" xmlns="http://www.w3.org/2000/svg">
+    <path d="M213.803 167.03c-.442-47.145 38.416-69.817 40.154-70.904-21.852-31.945-55.876-36.33-68.003-36.838-28.958-2.934-56.54 17.06-71.246 17.06-14.706 0-37.449-16.625-61.54-16.178-31.668.447-60.854 18.413-77.153 46.747-32.897 57.07-8.422 141.58 23.64 187.87 15.67 22.648 34.36 48.1 58.892 47.207 23.627-.94 32.564-15.295 61.136-15.295 28.573 0 36.568 15.295 61.54 14.808 25.42-.448 41.648-23.09 57.195-45.83 18.025-26.292 25.44-51.748 25.887-53.072-.565-.252-49.63-19.04-50.142-75.575h-.36z" fill="#0a84ff"/>
+    <path d="M174.24 50.199C187.19 34.834 196.04 13.703 193.73 0 175.706.892 153.66 12.358 140.28 27.722c-11.984 13.38-22.49 34.735-19.673 55.236 20.13 1.565 40.68-10.477 53.633-32.759z" fill="#0a84ff"/>
+  </svg>
+  <h1>SideCore Repos</h1>
+</header>
+
 <div id="container">
   <div id="searchBar">
     <div class="searchWrap">
-      <input id="searchInput" type="text" placeholder="Search apps…">
+      <input id="searchInput" type="text" placeholder="Search apps…" autocomplete="off" spellcheck="false"/>
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
       <select id="sortSelect" title="Sort apps">
         <option value="newest">Newest</option>
         <option value="oldest">Oldest</option>
@@ -26,29 +1203,657 @@
         <option value="version">Version</option>
       </select>
     </div>
-    <button id="importBtn" title="Import Personal Repo">+</button>
+    <button id="importBtn" title="Import Repo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
   </div>
+
   <div id="repos"></div>
-  <button id="backBtn">← Back to Libraries</button>
+
+  <button id="backBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Back to Libraries
+  </button>
+
   <div id="apps"></div>
 </div>
-<div id="toast"></div>
-<footer class="footer">
-  <span>© 2026 chocomilkyX iPA library - made by @gablilli</span>
 
-  <a
-    href="https://github.com/gablilli/chocomilkyX"
-    target="_blank"
-    rel="noopener"
-    class="github-link"
-    aria-label="github"
-  >
+<div id="toast"></div>
+
+<footer class="footer">
+  <span>© 2026 SideCore Repos</span>
+  <a href="https://github.com/gablilli/chocomilkyX" target="_blank" rel="noopener" class="github-link" aria-label="GitHub">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 .5C5.73.5.5 5.74.5 12.02c0 5.11 3.29 9.44 7.86 10.97.57.1.78-.25.78-.55v-2.02c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.3-5.23-1.29-5.23-5.74 0-1.27.45-2.31 1.19-3.13-.12-.3-.52-1.52.11-3.17 0 0 .97-.31 3.18 1.2a10.9 10.9 0 0 1 5.8 0c2.21-1.51 3.18-1.2 3.18-1.2.63 1.65.23 2.87.11 3.17.74.82 1.19 1.86 1.19 3.13 0 4.46-2.69 5.44-5.25 5.73.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.79.55 4.56-1.53 7.85-5.86 7.85-10.97C23.5 5.74 18.27.5 12 .5z"/>
     </svg>
-    <span>GitHub</span>
+    GitHub
   </a>
 </footer>
-<script src="/static/app.js" defer></script>
+
+<div id="appInfoModal">
+  <div class="appinfo-box">
+    <button class="close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="appinfo-header">
+      <img class="appicon" src="" alt=""/>
+      <div>
+        <h2 class="appname"></h2>
+        <div class="developer"></div>
+      </div>
+    </div>
+    <div class="meta-grid"></div>
+    <div class="description"></div>
+    <div class="screenshots"></div>
+    <div class="permissions"></div>
+  </div>
+</div>
+
+<div id="importModal">
+  <div class="box">
+    <h3>Import Repository</h3>
+    <p>Paste a repo JSON URL to add it to your library.</p>
+    <div class="import-row">
+      <input id="importModalInput" type="url" placeholder="https://example.com/repo.json" spellcheck="false"/>
+      <button id="importModalBtn">Import</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const reposArea = document.getElementById('repos');
+const appsArea = document.getElementById('apps');
+const backBtn = document.getElementById('backBtn');
+const searchBar = document.getElementById('searchBar');
+const searchInput = document.getElementById('searchInput');
+const toast = document.getElementById('toast');
+const importBtn = document.getElementById("importBtn");
+const header = document.querySelector("header");
+const sortSelect = document.getElementById("sortSelect");
+const appInfoModal = document.getElementById("appInfoModal");
+const importModal = document.getElementById("importModal");
+const importModalInput = document.getElementById("importModalInput");
+const importModalBtn = document.getElementById("importModalBtn");
+
+let currentSort = "newest";
+let currentApps = [];
+let viewingRepoUrl = null;
+let allAppsIndex = [];
+allAppsIndex._keys = new Set();
+let filteredApps = [];
+let loaded = 0;
+let lastScrollY = 0;
+let reposLoaded = false;
+
+const proxy = "https://chocomilkyX.vercel.app/api/proxy?url=";
+
+/* ═══════ HELPERS ═══════ */
+function getDevName(app) {
+  return app.developerName?.trim()
+    || app.developer?.trim()
+    || app.author?.trim()
+    || app.artistName?.trim()
+    || "";
+}
+
+/* ═══════ TOAST ═══════ */
+function showToast(msg, ms = 2200) {
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.animation = 'none';
+  toast.offsetHeight;
+  toast.style.animation = '';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => (toast.style.display = 'none'), ms);
+}
+
+/* ═══════ HEADER SCROLL ═══════ */
+let ticking = false;
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      if (window.scrollY > lastScrollY + 12) header.classList.add("unpin");
+      else if (window.scrollY < lastScrollY - 8) header.classList.remove("unpin");
+      lastScrollY = window.scrollY;
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* ═══════ CARD MOUSE GLOW ═══════ */
+document.addEventListener("mousemove", e => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+  card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+});
+
+/* ═══════ APP DETAIL MODAL ═══════ */
+function openAppInfo(app) {
+  const latest = app.versions?.[0] || app;
+  appInfoModal.querySelector(".appicon").src = app.iconURL || "";
+  appInfoModal.querySelector(".appname").textContent = app.name || "";
+  appInfoModal.querySelector(".versions")?.remove();
+
+  const devName = getDevName(app);
+  appInfoModal.querySelector(".developer").textContent = devName || "Unknown developer";
+
+  const meta = appInfoModal.querySelector(".meta-grid");
+  meta.innerHTML = `
+    <div><span>Bundle ID</span><strong>${app.bundleIdentifier || app.bundleID || "—"}</strong></div>
+    <div><span>Version</span><strong>${latest.version || "—"}</strong></div>
+    <div><span>Published</span><strong>${latest.versionDate || latest.date || "—"}</strong></div>
+    <div><span>Size</span><strong>${latest.size ? ((latest.size)/1024/1024).toFixed(2)+" MB" : "—"}</strong></div>
+  `;
+
+  appInfoModal.querySelector(".description").textContent =
+    app.localizedDescription || "No description provided.";
+
+  const shotsWrap = appInfoModal.querySelector(".screenshots");
+  shotsWrap.innerHTML = "";
+  shotsWrap.className = "screenshots";
+  const shots = app.screenshots?.iphone || app.screenshotURLs || [];
+  shots.forEach(s => {
+    const src = typeof s === "string" ? s : s.imageURL;
+    const img = new Image();
+    img.src = src;
+    img.alt = app.name || "Screenshot";
+    img.loading = "lazy";
+    shotsWrap.appendChild(img);
+    img.onerror = () => { img.style.display = "none"; };
+  });
+
+  const versions = app.versions || [];
+  if (versions.length > 1) {
+    const vw = document.createElement("div");
+    vw.className = "versions";
+    vw.innerHTML = `<h3>Previous Versions</h3>`;
+    versions.slice(0, 5).forEach(v => {
+      const row = document.createElement("div");
+      row.className = "version-row";
+      row.innerHTML = `
+        <span class="version-badge">${v.version}</span>
+        <a class="download" href="${v.downloadURL}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download</span>
+        </a>
+      `;
+      vw.appendChild(row);
+    });
+    appInfoModal.querySelector(".appinfo-box").appendChild(vw);
+  }
+
+  const permWrap = appInfoModal.querySelector(".permissions");
+  const ent = app.appPermissions?.entitlements || [];
+  permWrap.innerHTML = ent.length
+    ? `<h3>Permissions</h3>` + ent.map(e => `<span>${e}</span>`).join("")
+    : "";
+
+  appInfoModal.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+appInfoModal.addEventListener("click", e => {
+  if (e.target === appInfoModal) {
+    appInfoModal.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+});
+
+appInfoModal.querySelector(".close").addEventListener("click", () => {
+  appInfoModal.classList.remove("show");
+  document.body.style.overflow = "";
+});
+
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (appInfoModal.classList.contains("show")) {
+      appInfoModal.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+    if (importModal.classList.contains("show")) closeImportModal();
+  }
+});
+
+/* ═══════ PWA ═══════ */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
+/* ═══════ FETCH ═══════ */
+async function fetchRepoJSON(url, useProxy = false) {
+  const fetchUrl = useProxy ? proxy + encodeURIComponent(url) : url;
+  try {
+    const r = await fetch(fetchUrl);
+    if (!r.ok) throw 0;
+    return await r.json();
+  } catch { return null; }
+}
+
+/* ═══════ INDEX ═══════ */
+function indexRepoApps(repo) {
+  repo.apps?.forEach(app => {
+    const key = `${app.name}|${repo.name}`;
+    if (allAppsIndex._keys.has(key)) return;
+    allAppsIndex.push({ ...app, __repoName: repo.name || "Repo" });
+    allAppsIndex._keys.add(key);
+  });
+}
+
+/* ═══════ SORTING ═══════ */
+function getAppDate(app) {
+  if (app.fullDate) return Number(app.fullDate);
+  const d = app.versionDate || app.versions?.[0]?.versionDate;
+  return d ? new Date(d).getTime() : 0;
+}
+function getAppSize(app) { return app.versions?.[0]?.size || app.size || 0; }
+function getAppVersion(app) { return app.versions?.[0]?.version || app.version || ""; }
+
+function sortApps(apps) {
+  const a = apps.slice();
+  switch (currentSort) {
+    case "oldest":    return a.sort((x,y) => getAppDate(x) - getAppDate(y));
+    case "size_desc": return a.sort((x,y) => getAppSize(y) - getAppSize(x));
+    case "size_asc":  return a.sort((x,y) => getAppSize(x) - getAppSize(y));
+    case "version":   return a.sort((x,y) => String(getAppVersion(y)).localeCompare(getAppVersion(x), undefined, {numeric:true}));
+    default:          return a.sort((x,y) => getAppDate(y) - getAppDate(x));
+  }
+}
+
+sortSelect.addEventListener("change", () => { currentSort = sortSelect.value; applySearch(); });
+
+function toggleVersionSort({ show, inRepo = false, hasQuery = false }) {
+  const opt = sortSelect.querySelector('option[value="version"]');
+  if (opt) opt.style.display = (inRepo && !hasQuery) ? "none" : "";
+  if (!show && sortSelect.value === "version") { currentSort = "newest"; sortSelect.value = "newest"; }
+  show ? sortSelect.classList.add("show") : sortSelect.classList.remove("show");
+}
+
+/* ═══════ LOAD REPOS FROM repos.txt ═══════ */
+async function loadRepos() {
+  reposLoaded = false;
+  reposArea.style.display = "block";
+  reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
+
+  try {
+    const txtRes = await fetch("./repos.txt");
+    if (!txtRes.ok) throw new Error("Could not load repos.txt");
+    const txtContent = await txtRes.text();
+
+    const urls = txtContent.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith("#") && !l.startsWith("//"));
+
+    if (!urls.length) {
+      reposArea.innerHTML = `<div class="loading-line">No repos found in repos.txt</div>`;
+      reposLoaded = true;
+      return;
+    }
+
+    const repoEntries = [];
+    await Promise.all(urls.map(async (url) => {
+      let data = await fetchRepoJSON(url, false);
+      let useProxy = false;
+      if (!data) { data = await fetchRepoJSON(url, true); useProxy = true; }
+      if (data) repoEntries.push({ data, url, useProxy });
+    }));
+
+    const ordered = urls.map(u => repoEntries.find(e => e.url === u)).filter(Boolean);
+
+    if (!ordered.length) {
+      reposArea.innerHTML = `<div class="loading-line">Failed to load any repos.</div>`;
+      reposLoaded = true;
+      return;
+    }
+
+    allAppsIndex = [];
+    allAppsIndex._keys = new Set();
+    ordered.forEach(e => indexRepoApps(e.data));
+
+    currentApps = allAppsIndex.slice();
+    filteredApps = currentApps.slice();
+    loaded = 0;
+    reposArea.innerHTML = "";
+
+    ordered.forEach((entry, i) => {
+      const data = entry.data;
+      const first = data.apps?.[0] || {};
+      const icon = data.iconURL || first.iconURL || "";
+      const name = data.name || first.name || "Unnamed Repo";
+      const desc = data.description || first.subtitle || first.localizedDescription || "";
+
+      const div = document.createElement("div");
+      div.className = "repo-card";
+      div.dataset.url = entry.url;
+      div.innerHTML = `
+        <img src="${icon}" alt="" loading="lazy"/>
+        <div class="repo-info">
+          <div class="repo-name">${name}</div>
+          <div class="repo-desc">${desc}</div>
+        </div>
+        <div class="repo-actions">
+          <button class="openBtn" data-url="${entry.url}" data-use-proxy="${entry.useProxy}">Open</button>
+          <button class="copyBtn" data-url="${entry.url}">Copy URL</button>
+        </div>
+      `;
+      reposArea.appendChild(div);
+      requestAnimationFrame(() => setTimeout(() => div.classList.add("show"), i * 80));
+    });
+
+    searchBar.style.display = "flex";
+    reposLoaded = true;
+
+  } catch (err) {
+    reposArea.innerHTML = `<div class="loading-line">Failed to load repos.txt</div>`;
+    reposLoaded = true;
+  }
+}
+
+/* ═══════ USER REPOS ═══════ */
+function getUserRepos() { return JSON.parse(localStorage.getItem("userRepos") || "[]"); }
+function saveUserRepo(r) {
+  const x = getUserRepos();
+  if (!x.find(e => e.url === r.url)) { x.push(r); localStorage.setItem("userRepos", JSON.stringify(x)); }
+}
+function removeUserRepo(url) {
+  localStorage.setItem("userRepos", JSON.stringify(getUserRepos().filter(r => r.url !== url)));
+}
+
+async function fetchUserRepo(url, useProxy = false) {
+  try {
+    const fetchUrl = useProxy ? proxy + encodeURIComponent(url) : url;
+    const res = await fetch(fetchUrl);
+    if (!res.ok) throw "";
+    const data = await res.json();
+    if (!Array.isArray(data.apps)) throw "";
+    return data;
+  } catch { return null; }
+}
+
+/* ═══════ RENDER REPO CARD ═══════ */
+function renderRepoCard(repoData, repoUrl, useProxy = true, isUserRepo = true) {
+  const first = repoData.apps[0] || {};
+  const icon = repoData.iconURL || first.iconURL || "";
+  const name = repoData.name || first.name || "Unnamed Repo";
+  const desc = repoData.description || first.subtitle || first.localizedDescription || "";
+
+  const div = document.createElement("div");
+  div.className = "repo-card";
+  div.dataset.url = repoUrl;
+  div.innerHTML = `
+    <img src="${icon}" alt="" loading="lazy"/>
+    <div class="repo-info">
+      <div class="repo-name">${name}</div>
+      <div class="repo-desc">${desc}</div>
+    </div>
+    <div class="repo-actions">
+      <button class="openBtn" data-url="${repoUrl}" data-use-proxy="${useProxy}">Open</button>
+      <button class="copyBtn" data-url="${repoUrl}">Copy</button>
+      ${isUserRepo ? `<button class="removeBtn">Remove</button>` : ""}
+    </div>
+  `;
+  reposArea.prepend(div);
+  requestAnimationFrame(() => div.classList.add("show"));
+}
+
+/* ═══════ OPEN REPO ═══════ */
+async function openRepo(url, useProxy) {
+  viewingRepoUrl = url;
+  searchInput.value = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  toggleVersionSort(false);
+
+  reposArea.style.display = "none";
+  appsArea.innerHTML = "";
+
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement("div");
+    s.className = "skeleton";
+    appsArea.appendChild(s);
+  }
+
+  try {
+    let data = await fetchRepoJSON(url, useProxy === true || useProxy === "true");
+    if (!data) data = await fetchRepoJSON(url, true);
+    if (!data) throw 0;
+
+    currentApps = data.apps || [];
+    applySearch();
+    backBtn.style.display = "inline-flex";
+
+    window.onscroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 150) {
+        if (loaded < filteredApps.length) renderNextBatch();
+      }
+    };
+  } catch {
+    appsArea.innerHTML = `<div class="loading-line">Error loading repo.</div>`;
+  }
+}
+
+/* ═══════ SEARCH + INFINITE SCROLL ═══════ */
+function renderNextBatch() {
+  const batch = 24;
+  const next = filteredApps.slice(loaded, loaded + batch);
+  renderApps(next, loaded > 0);
+  loaded += next.length;
+}
+
+function applySearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  const hasQuery = q.length > 0;
+  const base = viewingRepoUrl ? currentApps : allAppsIndex;
+
+  if (!q) {
+    if (!viewingRepoUrl) {
+      reposArea.style.display = "";
+      appsArea.innerHTML = "";
+      [...reposArea.children].forEach((el, i) => {
+        el.classList.remove("show");
+        requestAnimationFrame(() => setTimeout(() => el.classList.add("show"), i * 70));
+      });
+      filteredApps = [];
+      loaded = 0;
+      window.onscroll = null;
+      toggleVersionSort({ show: false });
+      return;
+    }
+    filteredApps = sortApps(base);
+    loaded = 0;
+    appsArea.innerHTML = "";
+    renderNextBatch();
+    toggleVersionSort({ show: true, inRepo: true, hasQuery: false });
+    return;
+  }
+
+  if (!viewingRepoUrl) reposArea.style.display = "none";
+
+  filteredApps = sortApps(base.filter(a => {
+    const name = (a.name || "").toLowerCase();
+    const dev = getDevName(a).toLowerCase();
+    return name.includes(q) || dev.includes(q);
+  }));
+  loaded = 0;
+  appsArea.innerHTML = "";
+  renderNextBatch();
+  toggleVersionSort({ show: true, inRepo: !!viewingRepoUrl, hasQuery: true });
+
+  if (!viewingRepoUrl) {
+    window.onscroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 150) {
+        if (loaded < filteredApps.length) renderNextBatch();
+      }
+    };
+  }
+}
+
+let searchTimeout;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(applySearch, 180);
+});
+
+/* ═══════ RENDER APPS ═══════ */
+function renderApps(apps, append = false) {
+  if (!apps.length) {
+    if (!append) appsArea.innerHTML = `<div class="loading-line">No apps found.</div>`;
+    return;
+  }
+  if (!append) appsArea.innerHTML = "";
+
+  apps.forEach((app, i) => {
+    const latest = app.versions?.[0] || {};
+    const version = latest.version || app.version || "";
+    const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
+    const downloadURL = app.downloadURL || latest.downloadURL || "#";
+    const sizeBytes = latest.size || app.size || 0;
+    const devName = getDevName(app);
+
+    let sizeText = "Unknown";
+    if (sizeBytes > 1024 * 1024) sizeText = (sizeBytes / (1024 * 1024)).toFixed(1) + " MB";
+    else if (sizeBytes > 1024) sizeText = (sizeBytes / 1024).toFixed(1) + " KB";
+    else if (sizeBytes > 0) sizeText = sizeBytes + " B";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""/></div>
+      <div class="title">${app.name || ""}</div>
+      ${devName ? `<div class="app-developer">${devName}</div>` : ""}
+      <div class="meta">
+        ${version ? `<span class="version">v${version}</span>` : ""}
+        <span class="size">${sizeText}</span>
+      </div>
+      ${app.__repoName ? `<div class="repo-meta">${app.__repoName}</div>` : ""}
+      <div class="subtitle">${desc}</div>
+      <a class="download" href="${downloadURL}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Download</span>
+      </a>
+    `;
+
+    card.addEventListener("click", e => {
+      if (e.target.closest(".download") || e.target.closest("a")) return;
+      openAppInfo(app);
+    });
+
+    appsArea.appendChild(card);
+    requestAnimationFrame(() => setTimeout(() => card.classList.add("show"), i * 55));
+  });
+}
+
+/* icon fallback */
+document.addEventListener('error', function(e) {
+  if (e.target.tagName.toLowerCase() === 'img' && !e.target._fb) {
+    e.target._fb = true;
+    e.target.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="%23161620"/><text x="64" y="78" text-anchor="middle" font-size="44" fill="%23444" font-family="sans-serif">?</text></svg>');
+  }
+}, true);
+
+/* ═══════ EVENTS ═══════ */
+reposArea.addEventListener("click", e => {
+  const btn = e.target.closest(".openBtn");
+  if (btn) openRepo(btn.dataset.url, btn.dataset.useProxy === "true");
+});
+
+reposArea.addEventListener("click", e => {
+  const btn = e.target.closest(".copyBtn");
+  if (btn) navigator.clipboard.writeText(btn.dataset.url).then(() => showToast("URL copied to clipboard"));
+});
+
+reposArea.addEventListener("click", e => {
+  const btn = e.target.closest(".removeBtn");
+  if (btn) {
+    const card = btn.closest(".repo-card");
+    removeUserRepo(card.dataset.url);
+    card.style.transition = "opacity 0.35s var(--ease), transform 0.35s var(--ease)";
+    card.style.opacity = "0";
+    card.style.transform = "translateY(-12px) scale(0.97)";
+    setTimeout(() => card.remove(), 350);
+    showToast("Repo removed");
+  }
+});
+
+backBtn.addEventListener("click", () => {
+  viewingRepoUrl = null;
+  appsArea.innerHTML = "";
+  backBtn.style.display = "none";
+  window.onscroll = null;
+  filteredApps = [];
+  loaded = 0;
+  toggleVersionSort({ show: false });
+  searchInput.value = "";
+
+  if (reposLoaded) {
+    reposArea.style.display = "";
+    [...reposArea.children].forEach((el, i) => {
+      el.classList.remove("show");
+      requestAnimationFrame(() => setTimeout(() => el.classList.add("show"), i * 60));
+    });
+  }
+});
+
+/* ═══════ IMPORT MODAL ═══════ */
+function openImportModal() {
+  importModal.style.display = "flex";
+  requestAnimationFrame(() => { requestAnimationFrame(() => importModal.classList.add("show")); });
+  setTimeout(() => importModalInput.focus(), 100);
+}
+
+function closeImportModal() {
+  importModal.classList.remove("show");
+  setTimeout(() => (importModal.style.display = "none"), 400);
+}
+
+importBtn.addEventListener("click", openImportModal);
+
+importModalBtn.addEventListener("click", async () => {
+  const url = importModalInput.value.trim();
+  if (!url) return;
+
+  showToast("Importing repo…");
+  let repo = await fetchUserRepo(url);
+  let useProxy = false;
+
+  if (!repo) { repo = await fetchUserRepo(url, true); useProxy = true; }
+  if (!repo) return showToast("Invalid repo URL", 2800);
+
+  renderRepoCard(repo, url, useProxy, true);
+  saveUserRepo({ url, useProxy });
+  indexRepoApps(repo);
+
+  currentApps = allAppsIndex.slice();
+  filteredApps = currentApps.slice();
+
+  importModalInput.value = "";
+  closeImportModal();
+  showToast("Repo imported!");
+});
+
+importModal.addEventListener("click", e => { if (e.target === importModal) closeImportModal(); });
+importModalInput.addEventListener("keydown", e => { if (e.key === "Enter") importModalBtn.click(); });
+
+/* ═══════ BOOT ═══════ */
+loadRepos().then(async () => {
+  for (const r of getUserRepos()) {
+    const repo = await fetchUserRepo(r.url, r.useProxy);
+    if (repo) { renderRepoCard(repo, r.url, r.useProxy, true); indexRepoApps(repo); }
+  }
+});
+</script>
 </body>
 </html>
