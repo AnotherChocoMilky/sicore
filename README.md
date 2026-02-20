@@ -79,4 +79,5 @@ Want to add repositories to the library? Thank you!
 ```json
 {
   "url": "https://example.com/repo.json"
-}```
+}
+```
