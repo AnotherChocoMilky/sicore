@@ -5,16 +5,14 @@
 </p>
 
 <p align="center">
-  <img src="static/icons/logo1024x1024.png" alt="Choco MilkyX Logo" width="200"/>
+  <img src="static/icons/logo1024x1024.png" alt="SideCore Logo" width="200"/>
 </p>
 
 <h1 align="center">SideCore Repos</h1>
 
-
 <p align="center">
-  the chocomilkyX library is a simple static web project for downloading iPAs from your favourite repos.<br/>
-  the project is designed to be lightweight, easy to customize, and ready for a static deploy.<br/>
-  your favourite library, with the repos you need, all in one place.
+  A lightweight static web library for browsing and accessing apps from your favorite AltStore-compatible repositories.<br/>
+  Fast. Minimal. Customizable. Ready for static deployment.
 </p>
 
 <p align="center">
@@ -23,78 +21,62 @@
 
 ---
 
+## 📜 Project History
+
+**SideCore Repos** is a fork of **ChocoMilkyX**.
+
+ChocoMilkyX itself was originally a fork of *my original project*.  
+This repository represents the continued and official evolution of that original work.
+
+SideCore modernizes the structure, improves maintainability, and refines the user experience while staying lightweight and fully static.
+
+---
+
 > [!IMPORTANT]
-> 10 feb 26 - If you have trouble with fetching repos, just clean your cache or reinstall the pwa.
-> global repos json's path was changed.
+> 10 Feb 2026 – If you experience issues fetching repositories, clear your cache or reinstall the PWA.  
+> The global repos JSON path has changed.
 
-## ✨ some features
+---
 
-- import personal repos
-- view app details without installing them
-- add it as an app on your phone
-- deploy to vercel or github pages instantly
-- minimal and lightweight
+## ✨ Features
 
-## contribute to the project
+- Import personal repositories
+- Browse app details without installing
+- Install as a PWA on mobile devices
+- Instant deploy to Vercel or GitHub Pages
+- Fully static (no backend required)
+- Clean, minimal UI
 
-want to add repos to the library?
-first of all, thank you!
-to proceed:
+---
 
-1. fork this repository
-2. add your repo as a string (see example below)
-3. commit your changes
-4. open a pull request
+## ⚖️ Legal & Redistribution Notice
 
-### example
+> [!WARNING]  
+> This project **does NOT host any IPA files**.  
+> All downloadable content is served directly from third-party repositories.
 
-add an entry like this to the repos json file:
+SideCore only aggregates publicly accessible repository metadata.
+
+This project is **not redistributable for commercial resale or repackaging under another name without proper attribution and compliance with the license**.
+
+Users are responsible for complying with the terms and conditions of the original repositories they choose to use.
+
+---
+
+## 🤝 Contributing
+
+Want to add repositories to the library? Thank you!
+
+### Steps:
+
+1. Fork this repository  
+2. Add your repo as a string in the `repos.json` file  
+3. Commit your changes  
+4. Open a Pull Request  
+
+### Example Entry
 
 ```json
 {
   "url": "https://example.com/repo.json"
-}
-```
-
-that’s it 🍫
-
-for other contributions, see the contributing file.  
-
-## selfhost it - 🚀 getting started
-
-### deploy with vercel
-<a align="center" href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgablilli%2FchocomilkyX%2Ftree%2Fmain&project-name=mychocomilky&repository-name=mychocomilky"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
-
-### local hosting
-#### clone the repository
-
-```bash
-git clone https://github.com/gablilli/chocomilkyX.git
-cd chocomilkyX
-````
-
-#### run locally
-
-open `index.html` directly in your browser
-or use a local server (recommended):
-
-```bash
-npx http-server .
-```
-
----
-## about chocomilkyv2
-ChocoMilkyV2 was the original version of this project, created by chocomilky.  
-chocomilkyX continues and updates it with new features, improvements, and bug fixes, while making the library free and opensource.
-This project is a **revived version**, maintaining compatibility with the original repos and adding enhancements.
-
-> [!WARNING]  
-> chocomilkyX **does not host any IPA files**.  
->All downloadable files are provided by the original repositories.  
->This project simply accesses to them.
->Users are responsible for complying with the terms and conditions of the original sources.
-
-## 📄 license
-
-this project is licensed under the **gpl v3 license**.
-see the `license` file for details.
+}```
