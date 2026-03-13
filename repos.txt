@@ -1,4 +1,4 @@
-https://repository.apptesters.org/apps.json
+https://fastsign.dev/repo.json
 https://driftywinds.github.io/AltStore/apps.json
 https://raw.githubusercontent.com/titouan336/Spotify-AltStoreRepo-mirror/refs/heads/main/source.json
 https://gablilli.github.io/somereposblocked/cypwn.json
