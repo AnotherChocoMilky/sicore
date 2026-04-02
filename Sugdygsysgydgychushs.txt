@@ -86,7 +86,6 @@ html, body {
   min-height: 100dvh;
 }
 
-/* ambient background */
 body::before {
   content: "";
   position: fixed;
@@ -106,7 +105,6 @@ body::before {
   100% { opacity: 0.8; transform: scale(1); }
 }
 
-/* scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -117,7 +115,6 @@ body::before {
 
 ::selection { background: var(--accent); color: #fff; }
 
-/* focus ring */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -134,23 +131,56 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  transition: opacity 0.6s var(--ease), visibility 0.6s;
+  gap: 24px;
+  transition: opacity 0.7s var(--ease), visibility 0.7s, transform 0.7s var(--ease);
 }
 
 #loadingScreen.hide {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transform: scale(1.05);
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
+/* SideCore Logo for Loading */
+.loading-logo-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-logo-ring {
+  position: absolute;
+  inset: -6px;
   border-radius: 50%;
   border: 3px solid var(--border);
   border-top-color: var(--accent);
-  animation: spin 0.8s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+.loading-logo-ring-outer {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-bottom-color: rgba(10,132,255,0.3);
+  animation: spin 2.5s linear infinite reverse;
+}
+
+.loading-logo-container .logo-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10,132,255,0.15) 0%, transparent 70%);
+  animation: logoGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
 @keyframes spin {
@@ -158,14 +188,20 @@ body::before {
 }
 
 .loading-text {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text-secondary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  animation: loadTextPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadTextPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 .loading-progress {
-  width: 200px;
+  width: 220px;
   height: 3px;
   background: var(--border);
   border-radius: 99px;
@@ -180,7 +216,7 @@ body::before {
   top: 0;
   height: 100%;
   width: 40%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
   border-radius: 99px;
   animation: progressSlide 1.2s var(--ease) infinite;
 }
@@ -201,13 +237,17 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   background: rgba(0, 0, 0, 0.72);
   border-bottom: 0.5px solid rgba(255,255,255,0.08);
-  transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
+  transition: transform 0.45s var(--ease), opacity 0.45s var(--ease), box-shadow 0.3s;
   will-change: transform;
+}
+
+header.scrolled {
+  box-shadow: 0 1px 20px rgba(0,0,0,0.3);
 }
 
 header.unpin {
@@ -215,16 +255,77 @@ header.unpin {
   opacity: 0;
 }
 
-header .logo-icon {
-  width: 22px;
-  height: 22px;
+/* Proper SideCore logo - clean rounded square with "S" */
+.header-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0a84ff 0%, #0066d6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 10px rgba(10,132,255,0.35));
-  transition: transform 0.5s var(--ease-spring);
+  box-shadow: 0 2px 10px rgba(10,132,255,0.3);
+  transition: transform 0.5s var(--ease-spring), box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
-header:hover .logo-icon {
-  transform: scale(1.08) rotate(-5deg);
+.header-logo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+  border-radius: 8px 8px 0 0;
+}
+
+.header-logo svg {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+header:hover .header-logo {
+  transform: scale(1.08) rotate(-3deg);
+  box-shadow: 0 4px 16px rgba(10,132,255,0.4);
+}
+
+/* Loading screen logo */
+.loading-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0a84ff 0%, #0066d6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(10,132,255,0.3);
+}
+
+.loading-logo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+  border-radius: 16px 16px 0 0;
+}
+
+.loading-logo svg {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 header h1 {
@@ -246,6 +347,12 @@ header h1 {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  animation: containerFadeIn 0.6s var(--ease) 0.3s both;
+}
+
+@keyframes containerFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ══════════════ SECTION HEADERS ══════════════ */
@@ -254,6 +361,7 @@ header h1 {
   align-items: center;
   justify-content: space-between;
   padding: 6px 2px 2px;
+  animation: fadeUp 0.45s var(--ease) both;
 }
 
 .section-header h2 {
@@ -271,6 +379,7 @@ header h1 {
   padding: 4px 10px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border);
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ══════════════ SEARCH BAR ══════════════ */
@@ -313,7 +422,7 @@ header h1 {
   position: absolute;
   right: 68px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(0);
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -321,12 +430,13 @@ header h1 {
   border: none;
   color: var(--text-tertiary);
   cursor: pointer;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-spring);
   z-index: 2;
+  opacity: 0;
 }
 
 .search-clear:hover {
@@ -334,11 +444,34 @@ header h1 {
   color: var(--text);
 }
 
-.search-clear:active { transform: translateY(-50%) scale(0.85); }
+.search-clear:active { transform: translateY(-50%) scale(0.85) !important; }
 
-.search-clear.show { display: flex; }
+.search-clear.show { 
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
 
 .search-clear svg { width: 10px; height: 10px; }
+
+.search-shortcut {
+  position: absolute;
+  right: 68px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 5px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+
+.search-shortcut.hide { opacity: 0; }
 
 #searchInput {
   width: 100%;
@@ -383,7 +516,7 @@ header h1 {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s var(--ease), background 0.2s;
+  transition: opacity 0.3s var(--ease), background 0.2s, transform 0.3s var(--ease);
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%2348484a' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
@@ -460,8 +593,9 @@ header h1 {
   opacity: 0;
   transform: translateY(14px) scale(0.98);
   cursor: default;
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.2s, border-color 0.2s, box-shadow 0.3s;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.25s, border-color 0.25s, box-shadow 0.35s;
   will-change: transform, opacity;
+  overflow: hidden;
 }
 
 .repo-card.show {
@@ -475,15 +609,23 @@ header h1 {
   box-shadow: var(--shadow), var(--shadow-glow);
 }
 
+.repo-card .repo-icon-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+}
+
 .repo-card img.repo-icon {
   width: 50px;
   height: 50px;
-  object-fit: contain;
+  object-fit: cover;
   background: rgba(255,255,255,0.02);
   border-radius: 13px;
   flex-shrink: 0;
   border: 0.5px solid var(--border);
   transition: transform 0.4s var(--ease-spring);
+  display: block;
 }
 
 .repo-card:hover img.repo-icon {
@@ -547,14 +689,14 @@ button:active { transform: scale(0.94); }
   min-height: 34px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
 }
 
 .repo-actions .openBtn {
   background: var(--accent);
   color: #fff;
   box-shadow: 0 2px 10px rgba(10,132,255,0.15);
-  position: relative;
-  overflow: hidden;
 }
 
 .repo-actions .openBtn::before {
@@ -593,42 +735,6 @@ button:active { transform: scale(0.94); }
   border-color: rgba(255,69,58,0.35);
 }
 
-/* ══════════════ TAB BAR ══════════════ */
-.tab-bar {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  background: rgba(255,255,255,0.03);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  margin-bottom: 4px;
-}
-
-.tab-bar button {
-  flex: 1;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: var(--radius-xs);
-  background: transparent;
-  color: var(--text-tertiary);
-  border: none;
-  cursor: pointer;
-  transition: background 0.25s var(--ease), color 0.25s, transform 0.2s var(--ease-spring);
-  position: relative;
-}
-
-.tab-bar button.active {
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.tab-bar button:hover:not(.active) {
-  color: var(--text-secondary);
-  background: rgba(255,255,255,0.03);
-}
-
 /* ══════════════ APP GRID ══════════════ */
 #apps {
   display: grid;
@@ -650,8 +756,8 @@ button:active { transform: scale(0.94); }
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(20px) saturate(170%);
   opacity: 0;
-  transform: translateY(18px) scale(0.97);
-  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), background 0.2s, border-color 0.2s, box-shadow 0.35s;
+  transform: translateY(22px) scale(0.96);
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out), background 0.25s, border-color 0.25s, box-shadow 0.35s;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -689,6 +795,7 @@ button:active { transform: scale(0.94); }
 .card:active {
   transform: translateY(0) scale(0.97);
   background: var(--card-pressed);
+  transition-duration: 0.1s;
 }
 
 .card .icon-wrap {
@@ -706,6 +813,7 @@ button:active { transform: scale(0.94); }
   flex-shrink: 0;
   transition: transform 0.4s var(--ease-spring), box-shadow 0.4s;
   position: relative;
+  background: rgba(255,255,255,0.02);
 }
 
 .card:hover .icon {
@@ -718,6 +826,15 @@ button:active { transform: scale(0.94); }
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: opacity 0.3s var(--ease);
+}
+
+.card .icon img.loading {
+  opacity: 0;
+}
+
+.card .icon img.loaded {
+  opacity: 1;
 }
 
 /* new badge */
@@ -864,12 +981,19 @@ button:active { transform: scale(0.94); }
   font-size: 14px;
   font-weight: 500;
   grid-column: 1 / -1;
+  animation: fadeUp 0.5s var(--ease) both;
 }
 
 .no-results .no-results-icon {
   font-size: 48px;
   margin-bottom: 12px;
   opacity: 0.4;
+  animation: noResFloat 3s ease-in-out infinite;
+}
+
+@keyframes noResFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .no-results .no-results-text {
@@ -906,7 +1030,8 @@ button:active { transform: scale(0.94); }
 }
 
 #backBtn:active { transform: scale(0.94); }
-#backBtn svg { width: 14px; height: 14px; }
+#backBtn svg { width: 14px; height: 14px; transition: transform 0.3s var(--ease-spring); }
+#backBtn:hover svg { transform: translateX(-2px); }
 
 /* ══════════════ REPO HEADER (when viewing a repo) ══════════════ */
 .repo-hero {
@@ -919,6 +1044,12 @@ button:active { transform: scale(0.94); }
   border-radius: var(--radius);
   margin-bottom: 4px;
   animation: fadeUp 0.5s var(--ease) both;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.repo-hero:hover {
+  background: var(--card-hover);
+  border-color: var(--border-hover);
 }
 
 .repo-hero img {
@@ -926,7 +1057,13 @@ button:active { transform: scale(0.94); }
   height: 52px;
   border-radius: 14px;
   border: 0.5px solid var(--border);
-  object-fit: contain;
+  object-fit: cover;
+  background: rgba(255,255,255,0.02);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.repo-hero:hover img {
+  transform: scale(1.05);
 }
 
 .repo-hero .repo-hero-info h2 {
@@ -980,21 +1117,20 @@ button:active { transform: scale(0.94); }
   transform: translateX(-50%) translateY(20px);
   background: rgba(28, 28, 32, 0.97);
   backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   color: var(--text);
   padding: 12px 22px;
   border-radius: var(--radius-pill);
   font-size: 13.5px;
   font-weight: 600;
   z-index: 99999;
-  display: none;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 0.5px 0 rgba(255,255,255,0.06);
   border: 0.5px solid var(--border-hover);
-  animation: toastIn 0.45s var(--ease-bounce) forwards;
   letter-spacing: -0.01em;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
-  display: none;
+  max-width: calc(100vw - 40px);
 }
 
 .toast-icon {
@@ -1013,43 +1149,20 @@ button:active { transform: scale(0.94); }
   to { transform: translateX(-50%) translateY(12px) scale(0.95); opacity: 0; }
 }
 
-/* ══════════════ MODAL BASE ══════════════ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.35s var(--ease);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.modal-overlay.show {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-}
-
 /* ══════════════ APP INFO MODAL ══════════════ */
 #appInfoModal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
   z-index: 10000;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s var(--ease);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 #appInfoModal.show {
@@ -1098,6 +1211,7 @@ button:active { transform: scale(0.94); }
   border: 0.5px solid var(--border);
   transition: transform 0.4s var(--ease-spring);
   flex-shrink: 0;
+  background: rgba(255,255,255,0.02);
 }
 
 .appinfo-header img:hover {
@@ -1115,6 +1229,7 @@ button:active { transform: scale(0.94); }
   letter-spacing: -0.035em;
   line-height: 1.15;
   margin-bottom: 3px;
+  word-wrap: break-word;
 }
 
 .developer {
@@ -1189,7 +1304,6 @@ button:active { transform: scale(0.94); }
   padding: 0 24px 24px;
 }
 
-/* stats bar */
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1306,6 +1420,7 @@ button:active { transform: scale(0.94); }
   border: 0.5px solid var(--border);
   border-radius: var(--radius-sm);
   transition: background 0.2s, border-color 0.2s;
+  gap: 8px;
 }
 
 .version-row:hover {
@@ -1317,6 +1432,8 @@ button:active { transform: scale(0.94); }
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex: 1;
 }
 
 .version-badge {
@@ -1326,12 +1443,14 @@ button:active { transform: scale(0.94); }
   border-radius: var(--radius-pill);
   font-weight: 700;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .version-date {
   font-size: 11px;
   color: var(--text-tertiary);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .version-row .download {
@@ -1339,6 +1458,7 @@ button:active { transform: scale(0.94); }
   padding: 6px 14px;
   font-size: 12px;
   border-radius: var(--radius-pill);
+  flex-shrink: 0;
 }
 
 .permissions { margin-top: 16px; }
@@ -1370,7 +1490,8 @@ button:active { transform: scale(0.94); }
   inset: 0;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(24px);
-  display: flex;
+  -webkit-backdrop-filter: blur(24px);
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 10000;
@@ -1453,7 +1574,7 @@ button:active { transform: scale(0.94); }
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(10,132,255,0.2);
-  transition: transform 0.2s var(--ease-spring), box-shadow 0.25s var(--ease);
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.25s var(--ease), opacity 0.2s;
   white-space: nowrap;
   position: relative;
   overflow: hidden;
@@ -1474,6 +1595,11 @@ button:active { transform: scale(0.94); }
 
 #importModalBtn:active { transform: scale(0.94); }
 
+#importModalBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ══════════════ SCROLL TO TOP ══════════════ */
 #scrollTop {
   position: fixed;
@@ -1484,6 +1610,7 @@ button:active { transform: scale(0.94); }
   border-radius: 50%;
   background: rgba(28,28,32,0.92);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 0.5px solid var(--border);
   color: var(--text-secondary);
   display: flex;
@@ -1527,6 +1654,7 @@ button:active { transform: scale(0.94); }
   color: var(--subtle);
   border-top: 0.5px solid var(--border);
   margin-top: 16px;
+  animation: fadeIn 0.6s var(--ease) both;
 }
 
 .footer span { opacity: 0.6; }
@@ -1571,6 +1699,26 @@ button:active { transform: scale(0.94); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes gentleBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 /* ripple */
 .ripple {
   position: absolute;
@@ -1585,9 +1733,27 @@ button:active { transform: scale(0.94); }
   to { transform: scale(4); opacity: 0; }
 }
 
+/* ══════════════ PAGE TRANSITIONS ══════════════ */
+.page-transition-out {
+  animation: pageOut 0.35s var(--ease) forwards;
+}
+
+@keyframes pageOut {
+  to { opacity: 0; transform: translateY(-10px) scale(0.98); }
+}
+
+.page-transition-in {
+  animation: pageIn 0.45s var(--ease) both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* ══════════════ RESPONSIVE ══════════════ */
 @media (max-width: 640px) {
-  #container { padding: 12px 10px 28px; }
+  #container { padding: 12px 10px 28px; gap: 10px; }
   header { padding: 0 14px; }
   header h1 { font-size: 15px; }
 
@@ -1604,21 +1770,38 @@ button:active { transform: scale(0.94); }
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+    padding: 14px;
   }
 
-  .repo-card > img.repo-icon { align-self: flex-start; }
+  .repo-card .repo-icon-wrap { align-self: flex-start; }
 
   .repo-actions {
     width: 100%;
     justify-content: stretch;
   }
 
-  .repo-actions button { flex: 1; text-align: center; }
+  .repo-actions button { flex: 1; text-align: center; justify-content: center; }
 
   .appinfo-box {
     margin: 0;
     border-radius: 20px 20px 0 0;
     min-height: 60vh;
+    margin-top: auto;
+  }
+
+  #appInfoModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  #appInfoModal.show .appinfo-box {
+    transform: translateY(0);
+  }
+
+  .appinfo-box {
+    transform: translateY(100%);
+    transition: transform 0.5s var(--ease-spring);
   }
 
   .appinfo-hero { padding: 22px 16px 16px; }
@@ -1642,6 +1825,12 @@ button:active { transform: scale(0.94); }
   .repo-hero { padding: 14px; }
   .repo-hero img { width: 44px; height: 44px; }
   .repo-hero .repo-hero-info h2 { font-size: 16px; }
+
+  .search-shortcut { display: none; }
+  
+  #searchInput { padding-right: 68px; }
+  .search-clear { right: 46px; }
+  .search-clear.has-sort { right: 68px; }
 }
 
 @media (max-width: 380px) {
@@ -1653,6 +1842,12 @@ button:active { transform: scale(0.94); }
   .meta { gap: 3px; }
   .meta .version, .meta .size { font-size: 9.5px; padding: 2px 5px; }
   .download { padding: 7px 10px; font-size: 12px; }
+}
+
+@media (min-width: 641px) {
+  #appInfoModal {
+    padding: 20px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1668,7 +1863,6 @@ button:active { transform: scale(0.94); }
   }
 }
 
-/* reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1676,32 +1870,53 @@ button:active { transform: scale(0.94); }
   }
 }
 
-/* ══════════════ HAPTIC-LIKE VISUAL FEEDBACK ══════════════ */
-.tap-highlight {
-  transition: transform 0.12s var(--ease) !important;
-}
-.tap-highlight:active {
-  transform: scale(0.96) !important;
+/* ══════════════ HOVER NONE (touch devices) ══════════════ */
+@media (hover: none) {
+  .card:hover { 
+    transform: none;
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card.show:hover { transform: translateY(0) scale(1); }
+  .card:active {
+    transform: scale(0.97);
+    background: var(--card-pressed);
+  }
+  .repo-card:hover {
+    background: var(--card);
+    border-color: var(--border);
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
 <div id="loadingScreen">
-  <svg class="logo-icon" viewBox="0 0 256 315" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;filter:drop-shadow(0 0 20px rgba(10,132,255,0.4))">
-    <path d="M213.803 167.03c-.442-47.145 38.416-69.817 40.154-70.904-21.852-31.945-55.876-36.33-68.003-36.838-28.958-2.934-56.54 17.06-71.246 17.06-14.706 0-37.449-16.625-61.54-16.178-31.668.447-60.854 18.413-77.153 46.747-32.897 57.07-8.422 141.58 23.64 187.87 15.67 22.648 34.36 48.1 58.892 47.207 23.627-.94 32.564-15.295 61.136-15.295 28.573 0 36.568 15.295 61.54 14.808 25.42-.448 41.648-23.09 57.195-45.83 18.025-26.292 25.44-51.748 25.887-53.072-.565-.252-49.63-19.04-50.142-75.575h-.36z" fill="#0a84ff"/>
-    <path d="M174.24 50.199C187.19 34.834 196.04 13.703 193.73 0 175.706.892 153.66 12.358 140.28 27.722c-11.984 13.38-22.49 34.735-19.673 55.236 20.13 1.565 40.68-10.477 53.633-32.759z" fill="#0a84ff"/>
-  </svg>
+  <div class="loading-logo-container">
+    <div class="logo-glow"></div>
+    <div class="loading-logo-ring-outer"></div>
+    <div class="loading-logo-ring"></div>
+    <div class="loading-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+  </div>
   <div class="loading-text">Loading SideCore…</div>
   <div class="loading-progress"></div>
 </div>
 
 <header>
-  <svg class="logo-icon" viewBox="0 0 256 315" xmlns="http://www.w3.org/2000/svg">
-    <path d="M213.803 167.03c-.442-47.145 38.416-69.817 40.154-70.904-21.852-31.945-55.876-36.33-68.003-36.838-28.958-2.934-56.54 17.06-71.246 17.06-14.706 0-37.449-16.625-61.54-16.178-31.668.447-60.854 18.413-77.153 46.747-32.897 57.07-8.422 141.58 23.64 187.87 15.67 22.648 34.36 48.1 58.892 47.207 23.627-.94 32.564-15.295 61.136-15.295 28.573 0 36.568 15.295 61.54 14.808 25.42-.448 41.648-23.09 57.195-45.83 18.025-26.292 25.44-51.748 25.887-53.072-.565-.252-49.63-19.04-50.142-75.575h-.36z" fill="#0a84ff"/>
-    <path d="M174.24 50.199C187.19 34.834 196.04 13.703 193.73 0 175.706.892 153.66 12.358 140.28 27.722c-11.984 13.38-22.49 34.735-19.673 55.236 20.13 1.565 40.68-10.477 53.633-32.759z" fill="#0a84ff"/>
-  </svg>
+  <div class="header-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+      <path d="M2 17l10 5 10-5"/>
+      <path d="M2 12l10 5 10-5"/>
+    </svg>
+  </div>
   <h1>SideCore</h1>
 </header>
 
@@ -1713,12 +1928,13 @@ button:active { transform: scale(0.94); }
         <circle cx="11" cy="11" r="8"/>
         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <button class="search-clear" id="searchClear">
+      <button class="search-clear" id="searchClear" aria-label="Clear search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"/>
           <line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
+      <span class="search-shortcut" id="searchShortcut">⌘K</span>
       <select id="sortSelect" title="Sort apps">
         <option value="newest">Newest</option>
         <option value="oldest">Oldest</option>
@@ -1824,6 +2040,7 @@ const backBtn = document.getElementById('backBtn');
 const searchBar = document.getElementById('searchBar');
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
+const searchShortcut = document.getElementById('searchShortcut');
 const toast = document.getElementById('toast');
 const toastText = document.getElementById('toastText');
 const importBtn = document.getElementById("importBtn");
@@ -1852,6 +2069,16 @@ let repoDataCache = new Map();
 
 const proxy = "https://chocomilkyX.vercel.app/api/proxy?url=";
 
+// Preload icon cache
+const iconCache = new Map();
+
+function preloadIcon(url) {
+  if (!url || iconCache.has(url)) return;
+  const img = new Image();
+  img.src = url;
+  iconCache.set(url, img);
+}
+
 /* ═══════ HELPERS ═══════ */
 function getDevName(app) {
   return app.developerName?.trim() || app.developer?.trim() || app.author?.trim() || app.artistName?.trim() || "";
@@ -1879,8 +2106,7 @@ function isRecent(dateStr) {
   try {
     const d = new Date(dateStr);
     const now = new Date();
-    const diff = now - d;
-    return diff < 7 * 24 * 60 * 60 * 1000; // 7 days
+    return (now - d) < 7 * 24 * 60 * 60 * 1000;
   } catch { return false; }
 }
 
@@ -1904,7 +2130,7 @@ function showToast(msg, type = "success", ms = 2400) {
   toastText.textContent = msg;
   toast.style.display = 'flex';
   toast.style.animation = 'none';
-  toast.offsetHeight;
+  void toast.offsetHeight;
   toast.style.animation = 'toastIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards';
   clearTimeout(toast._t);
   toast._t = setTimeout(() => {
@@ -1919,10 +2145,12 @@ window.addEventListener("scroll", () => {
   if (!ticking) {
     requestAnimationFrame(() => {
       const sy = window.scrollY;
-      // header
       if (sy > lastScrollY + 16 && sy > 80) header.classList.add("unpin");
       else if (sy < lastScrollY - 10) header.classList.remove("unpin");
-      // scroll top
+      
+      if (sy > 10) header.classList.add("scrolled");
+      else header.classList.remove("scrolled");
+      
       if (sy > 400) scrollTopBtn.classList.add("show");
       else scrollTopBtn.classList.remove("show");
       lastScrollY = sy;
@@ -1936,14 +2164,25 @@ scrollTopBtn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* ═══════ SEARCH CLEAR ═══════ */
+/* ═══════ SEARCH CLEAR & SHORTCUT ═══════ */
 searchInput.addEventListener("input", () => {
-  searchClear.classList.toggle("show", searchInput.value.length > 0);
+  const hasVal = searchInput.value.length > 0;
+  searchClear.classList.toggle("show", hasVal);
+  searchShortcut.classList.toggle("hide", hasVal);
+});
+
+searchInput.addEventListener("focus", () => {
+  searchShortcut.classList.add("hide");
+});
+
+searchInput.addEventListener("blur", () => {
+  if (!searchInput.value.length) searchShortcut.classList.remove("hide");
 });
 
 searchClear.addEventListener("click", () => {
   searchInput.value = "";
   searchClear.classList.remove("show");
+  searchShortcut.classList.remove("hide");
   searchInput.focus();
   applySearch();
 });
@@ -1976,12 +2215,14 @@ function openAppInfo(app) {
   const downloadURL = app.downloadURL || latest.downloadURL || "#";
   appInfoModal.querySelector(".appicon").src = app.iconURL || "";
   appInfoModal.querySelector(".appname").textContent = app.name || "";
-  appInfoModal.querySelector(".versions")?.remove();
+  
+  // Remove old versions section if present
+  const oldVersions = appInfoModal.querySelector(".appinfo-content .versions");
+  if (oldVersions) oldVersions.remove();
 
   const devName = getDevName(app);
   appInfoModal.querySelector(".developer").textContent = devName || "Unknown developer";
 
-  // download hero button
   const dlHero = appInfoModal.querySelector(".download-hero");
   dlHero.href = downloadURL;
 
@@ -1992,22 +2233,10 @@ function openAppInfo(app) {
 
   const statsBar = appInfoModal.querySelector(".stats-bar");
   statsBar.innerHTML = `
-    <div class="stat">
-      <div class="stat-label">Version</div>
-      <div class="stat-value">${escapeHtml(version)}</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Size</div>
-      <div class="stat-value">${formatSize(sizeBytes)}</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Updated</div>
-      <div class="stat-value">${formatDate(versionDate)}</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Bundle</div>
-      <div class="stat-value" style="font-size:10px">${escapeHtml(bundleId)}</div>
-    </div>
+    <div class="stat"><div class="stat-label">Version</div><div class="stat-value">${escapeHtml(version)}</div></div>
+    <div class="stat"><div class="stat-label">Size</div><div class="stat-value">${formatSize(sizeBytes)}</div></div>
+    <div class="stat"><div class="stat-label">Updated</div><div class="stat-value">${formatDate(versionDate)}</div></div>
+    <div class="stat"><div class="stat-label">Bundle</div><div class="stat-value" style="font-size:10px">${escapeHtml(bundleId)}</div></div>
   `;
 
   appInfoModal.querySelector(".description").textContent =
@@ -2095,6 +2324,11 @@ async function fetchRepoJSON(url, useProxy = false) {
     if (!r.ok) throw 0;
     const data = await r.json();
     repoDataCache.set(cacheKey, data);
+    // Preload first few app icons
+    if (data.apps) {
+      data.apps.slice(0, 20).forEach(app => preloadIcon(app.iconURL));
+    }
+    if (data.iconURL) preloadIcon(data.iconURL);
     return data;
   } catch { return null; }
 }
@@ -2116,7 +2350,6 @@ function getAppDate(app) {
   return d ? new Date(d).getTime() : 0;
 }
 function getAppSize(app) { return app.versions?.[0]?.size || app.size || 0; }
-function getAppVersion(app) { return app.versions?.[0]?.version || app.version || ""; }
 
 function sortApps(apps) {
   const a = apps.slice();
@@ -2154,7 +2387,7 @@ const cardObserver = new IntersectionObserver((entries) => {
       cardObserver.unobserve(entry.target);
     }
   });
-}, { rootMargin: "80px", threshold: 0.05 });
+}, { rootMargin: "120px", threshold: 0.01 });
 
 /* ═══════ LOAD REPOS FROM repos.txt ═══════ */
 async function loadRepos() {
@@ -2176,6 +2409,7 @@ async function loadRepos() {
     }
 
     const repoEntries = [];
+    // Fetch all repos in parallel for speed
     await Promise.all(urls.map(async (url) => {
       let data = await fetchRepoJSON(url, false);
       let useProxy = false;
@@ -2201,7 +2435,7 @@ async function loadRepos() {
     reposArea.innerHTML = "";
 
     const cards = [];
-    ordered.forEach((entry, i) => {
+    ordered.forEach((entry) => {
       const data = entry.data;
       const first = data.apps?.[0] || {};
       const icon = data.iconURL || first.iconURL || "";
@@ -2213,7 +2447,7 @@ async function loadRepos() {
       div.className = "repo-card";
       div.dataset.url = entry.url;
       div.innerHTML = `
-        <img class="repo-icon" src="${icon}" alt="" loading="lazy"/>
+        <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
         <div class="repo-info">
           <div class="repo-name">${escapeHtml(name)}</div>
           <div class="repo-app-count">${appCount} app${appCount !== 1 ? 's' : ''}</div>
@@ -2271,7 +2505,7 @@ function renderRepoCard(repoData, repoUrl, useProxy = true, isUserRepo = true) {
   div.className = "repo-card";
   div.dataset.url = repoUrl;
   div.innerHTML = `
-    <img class="repo-icon" src="${icon}" alt="" loading="lazy"/>
+    <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
     <div class="repo-info">
       <div class="repo-name">${escapeHtml(name)}</div>
       <div class="repo-app-count">${appCount} app${appCount !== 1 ? 's' : ''}</div>
@@ -2284,7 +2518,7 @@ function renderRepoCard(repoData, repoUrl, useProxy = true, isUserRepo = true) {
     </div>
   `;
   reposArea.prepend(div);
-  requestAnimationFrame(() => div.classList.add("show"));
+  requestAnimationFrame(() => requestAnimationFrame(() => div.classList.add("show")));
 }
 
 /* ═══════ OPEN REPO ═══════ */
@@ -2292,18 +2526,25 @@ async function openRepo(url, useProxy) {
   viewingRepoUrl = url;
   searchInput.value = "";
   searchClear.classList.remove("show");
+  searchShortcut.classList.remove("hide");
   window.scrollTo({ top: 0, behavior: "smooth" });
   toggleVersionSort({ show: false });
 
+  // Animate out repos
+  reposArea.classList.add("page-transition-out");
+  await new Promise(r => setTimeout(r, 200));
+  
   reposArea.style.display = "none";
+  reposArea.classList.remove("page-transition-out");
   repoHeroArea.innerHTML = "";
   appsSectionHeader.innerHTML = "";
   appsArea.innerHTML = "";
 
-  // show skeletons
+  // Show skeletons
   for (let i = 0; i < 8; i++) {
     const s = document.createElement("div");
     s.className = "skeleton";
+    s.style.animationDelay = (i * 0.08) + "s";
     appsArea.appendChild(s);
   }
 
@@ -2314,15 +2555,17 @@ async function openRepo(url, useProxy) {
 
     viewingRepoData = data;
     currentApps = data.apps || [];
+    
+    // Preload all icons for this repo
+    currentApps.forEach(app => preloadIcon(app.iconURL));
 
-    // show repo hero
     const first = data.apps?.[0] || {};
     const icon = data.iconURL || first.iconURL || "";
     const name = data.name || first.name || "Unnamed Repo";
     const desc = data.description || first.subtitle || "";
     repoHeroArea.innerHTML = `
       <div class="repo-hero">
-        <img src="${icon}" alt="" loading="lazy"/>
+        <img src="${icon}" alt="" loading="eager" decoding="async"/>
         <div class="repo-hero-info">
           <h2>${escapeHtml(name)}</h2>
           <p>${escapeHtml(desc)}</p>
@@ -2354,12 +2597,14 @@ function renderNextBatch() {
 
 function applySearch() {
   const q = searchInput.value.trim().toLowerCase();
-  const hasQuery = q.length > 0;
+
   const base = viewingRepoUrl ? currentApps : allAppsIndex;
 
   if (!q) {
     if (!viewingRepoUrl) {
       reposArea.style.display = "";
+      reposArea.classList.add("page-transition-in");
+      setTimeout(() => reposArea.classList.remove("page-transition-in"), 500);
       repoHeroArea.innerHTML = "";
       appsSectionHeader.innerHTML = "";
       appsArea.innerHTML = "";
@@ -2385,7 +2630,8 @@ function applySearch() {
     const name = (a.name || "").toLowerCase();
     const dev = getDevName(a).toLowerCase();
     const bundle = (a.bundleIdentifier || a.bundleID || "").toLowerCase();
-    return name.includes(q) || dev.includes(q) || bundle.includes(q);
+    const desc = (a.subtitle || a.localizedDescription || "").toLowerCase();
+    return name.includes(q) || dev.includes(q) || bundle.includes(q) || desc.includes(q);
   }));
   loaded = 0;
   appsArea.innerHTML = "";
@@ -2420,7 +2666,7 @@ function updateSectionHeader() {
 let searchTimeout;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(applySearch, 150);
+  searchTimeout = setTimeout(applySearch, 120);
 });
 
 /* ═══════ RENDER APPS ═══════ */
@@ -2440,7 +2686,9 @@ function renderApps(apps, append = false) {
   }
   if (!append) appsArea.innerHTML = "";
 
-  apps.forEach((app, i) => {
+  const fragment = document.createDocumentFragment();
+
+  apps.forEach((app) => {
     const latest = app.versions?.[0] || {};
     const version = latest.version || app.version || "";
     const desc = app.subtitle || app.localizedDescription || latest.localizedDescription || "";
@@ -2449,12 +2697,13 @@ function renderApps(apps, append = false) {
     const devName = getDevName(app);
     const vDate = latest.versionDate || latest.date || app.versionDate || "";
     const recent = isRecent(vDate);
+    const iconURL = app.iconURL || "";
 
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
       <div class="icon-wrap">
-        <div class="icon"><img loading="lazy" src="${app.iconURL || ''}" alt=""/></div>
+        <div class="icon"><img loading="eager" decoding="async" src="${iconURL}" alt="" class="loading"/></div>
         ${recent ? '<span class="new-badge">NEW</span>' : ''}
       </div>
       <div class="title">${escapeHtml(app.name || "")}</div>
@@ -2475,15 +2724,34 @@ function renderApps(apps, append = false) {
       </a>
     `;
 
+    // Handle icon load transition
+    const img = card.querySelector(".icon img");
+    if (img) {
+      if (img.complete && img.naturalWidth) {
+        img.classList.remove("loading");
+        img.classList.add("loaded");
+      } else {
+        img.addEventListener("load", () => {
+          img.classList.remove("loading");
+          img.classList.add("loaded");
+        }, { once: true });
+        img.addEventListener("error", () => {
+          img.classList.remove("loading");
+          img.classList.add("loaded");
+        }, { once: true });
+      }
+    }
+
     card.addEventListener("click", e => {
       if (e.target.closest(".download") || e.target.closest("a")) return;
       openAppInfo(app);
     });
 
-    appsArea.appendChild(card);
-    // use intersection observer for lazy animation
+    fragment.appendChild(card);
     cardObserver.observe(card);
   });
+
+  appsArea.appendChild(fragment);
 }
 
 /* icon fallback */
@@ -2527,14 +2795,34 @@ reposArea.addEventListener("click", e => {
     showToast("Repo removed", "info");
     return;
   }
+  
+  // Click on repo card itself to open
+  const repoCard = e.target.closest(".repo-card");
+  if (repoCard && !e.target.closest(".repo-actions")) {
+    const openBtnInCard = repoCard.querySelector(".openBtn");
+    if (openBtnInCard) {
+      addRipple(repoCard, e);
+      openRepo(openBtnInCard.dataset.url, openBtnInCard.dataset.useProxy === "true");
+    }
+  }
 });
 
-backBtn.addEventListener("click", () => {
+backBtn.addEventListener("click", async () => {
+  // Animate out current view
+  appsArea.classList.add("page-transition-out");
+  repoHeroArea.classList.add("page-transition-out");
+  appsSectionHeader.classList.add("page-transition-out");
+  
+  await new Promise(r => setTimeout(r, 250));
+  
   viewingRepoUrl = null;
   viewingRepoData = null;
   appsArea.innerHTML = "";
+  appsArea.classList.remove("page-transition-out");
   repoHeroArea.innerHTML = "";
+  repoHeroArea.classList.remove("page-transition-out");
   appsSectionHeader.innerHTML = "";
+  appsSectionHeader.classList.remove("page-transition-out");
   backBtn.style.display = "none";
   window.onscroll = null;
   filteredApps = [];
@@ -2542,10 +2830,13 @@ backBtn.addEventListener("click", () => {
   toggleVersionSort({ show: false });
   searchInput.value = "";
   searchClear.classList.remove("show");
+  searchShortcut.classList.remove("hide");
 
   if (reposLoaded) {
     reposArea.style.display = "";
+    reposArea.classList.add("page-transition-in");
     staggerShow([...reposArea.children], 45);
+    setTimeout(() => reposArea.classList.remove("page-transition-in"), 500);
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2560,7 +2851,7 @@ function openImportModal() {
 
 function closeImportModal() {
   importModal.classList.remove("show");
-  setTimeout(() => (importModal.style.display = "none"), 400);
+  setTimeout(() => { importModal.style.display = "none"; }, 400);
 }
 
 importBtn.addEventListener("click", openImportModal);
@@ -2600,9 +2891,8 @@ importModalBtn.addEventListener("click", async () => {
 importModal.addEventListener("click", e => { if (e.target === importModal) closeImportModal(); });
 importModalInput.addEventListener("keydown", e => { if (e.key === "Enter") importModalBtn.click(); });
 
-/* ═══════ KEYBOARD SHORTCUT ═══════ */
+/* ═══════ KEYBOARD SHORTCUTS ═══════ */
 document.addEventListener("keydown", e => {
-  // Cmd/Ctrl + K to focus search
   if ((e.metaKey || e.ctrlKey) && e.key === "k") {
     e.preventDefault();
     searchInput.focus();
@@ -2610,24 +2900,46 @@ document.addEventListener("keydown", e => {
   }
 });
 
+/* ═══════ DOUBLE TAP TO SCROLL TOP (mobile QOL) ═══════ */
+let lastHeaderTap = 0;
+header.addEventListener("click", () => {
+  const now = Date.now();
+  if (now - lastHeaderTap < 400) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  lastHeaderTap = now;
+});
+
 /* ═══════ LOADING SCREEN DISMISS ═══════ */
 function dismissLoading() {
+  if (loadingScreen._dismissed) return;
+  loadingScreen._dismissed = true;
   loadingScreen.classList.add("hide");
-  setTimeout(() => loadingScreen.remove(), 700);
+  setTimeout(() => loadingScreen.remove(), 800);
 }
 
 /* ═══════ BOOT ═══════ */
 loadRepos().then(async () => {
-  for (const r of getUserRepos()) {
-    const repo = await fetchUserRepo(r.url, r.useProxy);
-    if (repo) { renderRepoCard(repo, r.url, r.useProxy, true); indexRepoApps(repo); }
-  }
+  const userRepos = getUserRepos();
+  // Load user repos in parallel
+  const userResults = await Promise.allSettled(
+    userRepos.map(async r => {
+      const repo = await fetchUserRepo(r.url, r.useProxy);
+      return repo ? { repo, url: r.url, useProxy: r.useProxy } : null;
+    })
+  );
+  userResults.forEach(result => {
+    if (result.status === 'fulfilled' && result.value) {
+      const { repo, url, useProxy } = result.value;
+      renderRepoCard(repo, url, useProxy, true);
+      indexRepoApps(repo);
+    }
+  });
   dismissLoading();
 }).catch(() => {
   dismissLoading();
 });
 
-// Fallback dismiss after 5s
 setTimeout(dismissLoading, 5000);
 </script>
 </body>
