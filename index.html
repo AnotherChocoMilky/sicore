@@ -399,6 +399,8 @@ header h1 {
 .searchWrap {
   position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .searchWrap .search-icon {
@@ -411,6 +413,7 @@ header h1 {
   color: var(--text-tertiary);
   pointer-events: none;
   transition: color 0.3s var(--ease), transform 0.35s var(--ease-spring);
+  z-index: 2;
 }
 
 #searchInput:focus ~ .search-icon {
@@ -418,87 +421,7 @@ header h1 {
   transform: translateY(-50%) scale(1.08);
 }
 
-.search-clear {
-  position: absolute;
-  right: 68px;
-  top: 50%;
-  transform: translateY(-50%) scale(0);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  border: none;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-spring);
-  z-index: 2;
-  opacity: 0;
-}
-
-.search-clear:hover {
-  background: rgba(255,255,255,0.14);
-  color: var(--text);
-}
-
-.search-clear:active { transform: translateY(-50%) scale(0.85) !important; }
-
-.search-clear.show { 
-  transform: translateY(-50%) scale(1);
-  opacity: 1;
-}
-
-.search-clear svg { width: 10px; height: 10px; }
-
-.search-shortcut {
-  position: absolute;
-  right: 68px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  padding: 2px 6px;
-  border-radius: 5px;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  opacity: 0.6;
-  letter-spacing: 0.02em;
-}
-
-.search-shortcut.hide { opacity: 0; }
-
-#searchInput {
-  width: 100%;
-  padding: 12px 95px 12px 40px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--border);
-  background: rgba(255,255,255,0.03);
-  color: var(--text);
-  font-size: 15px;
-  font-family: var(--font);
-  font-weight: 500;
-  outline: none;
-  letter-spacing: -0.01em;
-  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.4s var(--ease);
-}
-
-#searchInput::placeholder {
-  color: var(--text-tertiary);
-  font-weight: 400;
-}
-
-#searchInput:focus {
-  border-color: var(--accent);
-  background: rgba(10,132,255,0.02);
-  box-shadow: 0 0 0 3.5px var(--accent-soft), 0 4px 16px rgba(10,132,255,0.04);
-}
-
+/* ── Sort select: always anchored to the right inside the input ── */
 #sortSelect {
   position: absolute;
   right: 6px;
@@ -522,10 +445,109 @@ header h1 {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%2348484a' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 7px center;
+  z-index: 2;
 }
 
 #sortSelect:hover { background: rgba(255,255,255,0.07); }
 #sortSelect.show { opacity: 1; pointer-events: auto; }
+
+/* ── Clear button: positioned to the LEFT of the sort select, outside it ── */
+.search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-spring), right 0.25s var(--ease), opacity 0.25s var(--ease);
+  z-index: 3;
+  opacity: 0;
+}
+
+.search-clear:hover {
+  background: rgba(255,255,255,0.14);
+  color: var(--text);
+}
+
+.search-clear:active { transform: translateY(-50%) scale(0.85) !important; }
+
+.search-clear.show {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+
+.search-clear svg { width: 10px; height: 10px; }
+
+/* ── Keyboard shortcut hint ── */
+.search-shortcut {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 5px;
+  pointer-events: none;
+  transition: opacity 0.3s, right 0.25s var(--ease);
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+  z-index: 2;
+}
+
+.search-shortcut.hide { opacity: 0; }
+
+/* ── Input: base padding (no sort visible) ── */
+#searchInput {
+  width: 100%;
+  padding: 12px 40px 12px 40px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  font-size: 15px;
+  font-family: var(--font);
+  font-weight: 500;
+  outline: none;
+  letter-spacing: -0.01em;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.4s var(--ease), padding-right 0.25s var(--ease);
+}
+
+#searchInput::placeholder {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+#searchInput:focus {
+  border-color: var(--accent);
+  background: rgba(10,132,255,0.02);
+  box-shadow: 0 0 0 3.5px var(--accent-soft), 0 4px 16px rgba(10,132,255,0.04);
+}
+
+/* ── When sort IS visible, bump input padding and reposition clear/shortcut ── */
+#searchInput.has-sort {
+  padding-right: 100px;
+}
+
+.search-clear.has-sort {
+  right: 76px;
+}
+
+.search-shortcut.has-sort {
+  right: 76px;
+}
 
 #importBtn {
   min-height: 44px;
@@ -1827,10 +1849,6 @@ button:active { transform: scale(0.94); }
   .repo-hero .repo-hero-info h2 { font-size: 16px; }
 
   .search-shortcut { display: none; }
-  
-  #searchInput { padding-right: 68px; }
-  .search-clear { right: 46px; }
-  .search-clear.has-sort { right: 68px; }
 }
 
 @media (max-width: 380px) {
@@ -2365,8 +2383,19 @@ function sortApps(apps) {
 
 sortSelect.addEventListener("change", () => { currentSort = sortSelect.value; applySearch(); });
 
+/* ═══════ TOGGLE SORT VISIBILITY (also updates layout classes) ═══════ */
 function toggleVersionSort({ show }) {
-  show ? sortSelect.classList.add("show") : sortSelect.classList.remove("show");
+  if (show) {
+    sortSelect.classList.add("show");
+    searchInput.classList.add("has-sort");
+    searchClear.classList.add("has-sort");
+    searchShortcut.classList.add("has-sort");
+  } else {
+    sortSelect.classList.remove("show");
+    searchInput.classList.remove("has-sort");
+    searchClear.classList.remove("has-sort");
+    searchShortcut.classList.remove("has-sort");
+  }
 }
 
 /* ═══════ STAGGERED ANIMATION ═══════ */
