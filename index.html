@@ -26,6 +26,9 @@
   --green: #30d158;
   --green-soft: rgba(48, 209, 88, 0.12);
   --orange: #ff9f0a;
+  --orange-soft: rgba(255, 159, 10, 0.12);
+  --purple: #bf5af2;
+  --purple-soft: rgba(191, 90, 242, 0.12);
   --red: #ff453a;
   --red-soft: rgba(255, 69, 58, 0.1);
   --text: #f5f5f7;
@@ -142,7 +145,6 @@ body::before {
   transform: scale(1.05);
 }
 
-/* SideCore Logo for Loading */
 .loading-logo-container {
   position: relative;
   width: 80px;
@@ -236,8 +238,7 @@ header {
   height: calc(56px + var(--safe-top));
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   background: rgba(0, 0, 0, 0.72);
@@ -255,7 +256,65 @@ header.unpin {
   opacity: 0;
 }
 
-/* Proper SideCore logo - clean rounded square with "S" */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-nav-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s var(--ease-spring);
+  letter-spacing: -0.01em;
+}
+
+.header-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+.header-nav-btn:active { transform: scale(0.94); }
+.header-nav-btn svg { width: 12px; height: 12px; }
+.header-nav-btn.show { display: inline-flex; }
+
+.header-breadcrumb {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.header-breadcrumb.show { display: flex; }
+.header-breadcrumb .sep { opacity: 0.4; }
+.header-breadcrumb .current {
+  color: var(--text-secondary);
+  font-weight: 600;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .header-logo {
   width: 30px;
   height: 30px;
@@ -290,12 +349,11 @@ header.unpin {
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 }
 
-header:hover .header-logo {
+.header-left:hover .header-logo {
   transform: scale(1.08) rotate(-3deg);
   box-shadow: 0 4px 16px rgba(10,132,255,0.4);
 }
 
-/* Loading screen logo */
 .loading-logo {
   width: 64px;
   height: 64px;
@@ -369,6 +427,15 @@ header h1 {
   font-weight: 800;
   letter-spacing: -0.035em;
   color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header h2 .section-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
 }
 
 .section-header .count-badge {
@@ -380,6 +447,12 @@ header h1 {
   border-radius: var(--radius-pill);
   border: 1px solid var(--border);
   transition: background 0.2s, color 0.2s;
+}
+
+.section-divider {
+  height: 0.5px;
+  background: var(--border);
+  margin: 4px 0;
 }
 
 /* ══════════════ SEARCH BAR ══════════════ */
@@ -421,37 +494,105 @@ header h1 {
   transform: translateY(-50%) scale(1.08);
 }
 
-/* ── Sort select: always anchored to the right inside the input ── */
-#sortSelect {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 34px;
-  border-radius: var(--radius-xs);
-  padding: 0 24px 0 10px;
+/* Sort button - separate from search input */
+#sortBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
   background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  color: var(--text);
+  border: 1.5px solid var(--border);
+  color: var(--text-secondary);
   font-family: var(--font);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s var(--ease), background 0.2s, transform 0.3s var(--ease);
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%2348484a' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 7px center;
-  z-index: 2;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s var(--ease-spring);
+  flex-shrink: 0;
+  white-space: nowrap;
+  position: relative;
 }
 
-#sortSelect:hover { background: rgba(255,255,255,0.07); }
-#sortSelect.show { opacity: 1; pointer-events: auto; }
+#sortBtn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: var(--border-hover);
+  color: var(--text);
+}
 
-/* ── Clear button: positioned to the LEFT of the sort select, outside it ── */
+#sortBtn:active { transform: scale(0.94); }
+#sortBtn svg { width: 14px; height: 14px; flex-shrink: 0; }
+#sortBtn.show { display: inline-flex; }
+
+/* Sort dropdown menu */
+.sort-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: rgba(28, 28, 32, 0.97);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--border-hover);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  z-index: 200;
+  min-width: 160px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease-spring);
+}
+
+.sort-dropdown.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.sort-dropdown .sort-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font);
+}
+
+.sort-dropdown .sort-option:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+
+.sort-dropdown .sort-option.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sort-dropdown .sort-option .check-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  color: var(--accent);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.sort-dropdown .sort-option.active .check-icon { opacity: 1; }
+
+/* Clear button - properly separate from sort */
 .search-clear {
   position: absolute;
   right: 10px;
@@ -468,7 +609,7 @@ header h1 {
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-spring), right 0.25s var(--ease), opacity 0.25s var(--ease);
+  transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-spring), opacity 0.25s var(--ease);
   z-index: 3;
   opacity: 0;
 }
@@ -487,7 +628,7 @@ header h1 {
 
 .search-clear svg { width: 10px; height: 10px; }
 
-/* ── Keyboard shortcut hint ── */
+/* Keyboard shortcut hint */
 .search-shortcut {
   position: absolute;
   right: 10px;
@@ -501,7 +642,7 @@ header h1 {
   padding: 2px 6px;
   border-radius: 5px;
   pointer-events: none;
-  transition: opacity 0.3s, right 0.25s var(--ease);
+  transition: opacity 0.3s;
   opacity: 0.6;
   letter-spacing: 0.02em;
   z-index: 2;
@@ -509,7 +650,6 @@ header h1 {
 
 .search-shortcut.hide { opacity: 0; }
 
-/* ── Input: base padding (no sort visible) ── */
 #searchInput {
   width: 100%;
   padding: 12px 40px 12px 40px;
@@ -522,7 +662,7 @@ header h1 {
   font-weight: 500;
   outline: none;
   letter-spacing: -0.01em;
-  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.4s var(--ease), padding-right 0.25s var(--ease);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.4s var(--ease);
 }
 
 #searchInput::placeholder {
@@ -534,19 +674,6 @@ header h1 {
   border-color: var(--accent);
   background: rgba(10,132,255,0.02);
   box-shadow: 0 0 0 3.5px var(--accent-soft), 0 4px 16px rgba(10,132,255,0.04);
-}
-
-/* ── When sort IS visible, bump input padding and reposition clear/shortcut ── */
-#searchInput.has-sort {
-  padding-right: 100px;
-}
-
-.search-clear.has-sort {
-  right: 76px;
-}
-
-.search-shortcut.has-sort {
-  right: 76px;
 }
 
 #importBtn {
@@ -600,6 +727,43 @@ header h1 {
   transform: rotate(90deg);
 }
 
+/* ══════════════ REPO SECTIONS ══════════════ */
+#defaultReposSection, #userReposSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-repos-empty {
+  text-align: center;
+  padding: 28px 20px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  animation: fadeUp 0.4s var(--ease) both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-repos-empty .empty-icon {
+  font-size: 28px;
+  opacity: 0.4;
+}
+
+.user-repos-empty .empty-cta {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.user-repos-empty .empty-cta:hover { opacity: 0.8; }
+
 /* ══════════════ REPO CARDS ══════════════ */
 .repo-card {
   display: flex;
@@ -608,7 +772,6 @@ header h1 {
   border: 0.5px solid var(--border);
   border-radius: var(--radius);
   padding: 14px 16px;
-  margin-bottom: 8px;
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(20px) saturate(170%);
   align-items: center;
@@ -654,6 +817,27 @@ header h1 {
   transform: scale(1.05);
 }
 
+.repo-card .user-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.repo-card .user-badge svg {
+  width: 8px;
+  height: 8px;
+  color: white;
+}
+
 .repo-info { flex: 1; min-width: 0; }
 
 .repo-name {
@@ -664,6 +848,31 @@ header h1 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.repo-name .repo-type-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.repo-type-tag.default {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 0.5px solid rgba(10,132,255,0.2);
+}
+
+.repo-type-tag.user {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border: 0.5px solid rgba(191,90,242,0.2);
 }
 
 .repo-app-count {
@@ -851,15 +1060,9 @@ button:active { transform: scale(0.94); }
   transition: opacity 0.3s var(--ease);
 }
 
-.card .icon img.loading {
-  opacity: 0;
-}
+.card .icon img.loading { opacity: 0; }
+.card .icon img.loaded { opacity: 1; }
 
-.card .icon img.loaded {
-  opacity: 1;
-}
-
-/* new badge */
 .card .new-badge {
   position: absolute;
   top: -4px;
@@ -1088,6 +1291,8 @@ button:active { transform: scale(0.94); }
   transform: scale(1.05);
 }
 
+.repo-hero .repo-hero-info { flex: 1; min-width: 0; }
+
 .repo-hero .repo-hero-info h2 {
   font-size: 18px;
   font-weight: 800;
@@ -1099,6 +1304,30 @@ button:active { transform: scale(0.94); }
   font-size: 12.5px;
   color: var(--text-secondary);
   line-height: 1.35;
+}
+
+.repo-hero .repo-hero-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.repo-hero .repo-hero-actions button {
+  padding: 7px 14px;
+  font-size: 12px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.repo-hero .repo-hero-actions button:hover {
+  background: rgba(255,255,255,0.09);
+  color: var(--text);
+  border-color: var(--border-hover);
 }
 
 /* ══════════════ LOADING ══════════════ */
@@ -1741,7 +1970,6 @@ button:active { transform: scale(0.94); }
   50% { transform: translateY(-4px); }
 }
 
-/* ripple */
 .ripple {
   position: absolute;
   border-radius: 50%;
@@ -1844,11 +2072,18 @@ button:active { transform: scale(0.94); }
 
   .section-header h2 { font-size: 20px; }
 
-  .repo-hero { padding: 14px; }
+  .repo-hero { padding: 14px; flex-wrap: wrap; }
   .repo-hero img { width: 44px; height: 44px; }
   .repo-hero .repo-hero-info h2 { font-size: 16px; }
+  .repo-hero .repo-hero-actions { width: 100%; }
+  .repo-hero .repo-hero-actions button { flex: 1; text-align: center; justify-content: center; }
 
   .search-shortcut { display: none; }
+  
+  .header-breadcrumb .current { max-width: 100px; }
+  
+  #sortBtn .sort-label-text { display: none; }
+  #sortBtn { padding: 0 10px; min-width: 44px; }
 }
 
 @media (max-width: 380px) {
@@ -1888,7 +2123,6 @@ button:active { transform: scale(0.94); }
   }
 }
 
-/* ══════════════ HOVER NONE (touch devices) ══════════════ */
 @media (hover: none) {
   .card:hover { 
     transform: none;
@@ -1928,14 +2162,28 @@ button:active { transform: scale(0.94); }
 </div>
 
 <header>
-  <div class="header-logo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-      <path d="M2 17l10 5 10-5"/>
-      <path d="M2 12l10 5 10-5"/>
-    </svg>
+  <div class="header-left" id="headerHome">
+    <div class="header-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <h1>SideCore</h1>
   </div>
-  <h1>SideCore</h1>
+  <div class="header-right">
+    <div class="header-breadcrumb" id="headerBreadcrumb">
+      <span class="sep">›</span>
+      <span class="current" id="breadcrumbText"></span>
+    </div>
+    <button class="header-nav-btn" id="headerBackBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Back
+    </button>
+  </div>
 </header>
 
 <div id="container">
@@ -1953,14 +2201,40 @@ button:active { transform: scale(0.94); }
         </svg>
       </button>
       <span class="search-shortcut" id="searchShortcut">⌘K</span>
-      <select id="sortSelect" title="Sort apps">
-        <option value="newest">Newest</option>
-        <option value="oldest">Oldest</option>
-        <option value="az">A → Z</option>
-        <option value="za">Z → A</option>
-        <option value="size_desc">Size ↓</option>
-        <option value="size_asc">Size ↑</option>
-      </select>
+    </div>
+    <div style="position:relative;flex-shrink:0;">
+      <button id="sortBtn" title="Sort apps">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M3 12h12M3 18h6"/>
+        </svg>
+        <span class="sort-label-text">Sort</span>
+      </button>
+      <div class="sort-dropdown" id="sortDropdown">
+        <button class="sort-option active" data-sort="newest">
+          Newest First
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="sort-option" data-sort="oldest">
+          Oldest First
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="sort-option" data-sort="az">
+          A → Z
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="sort-option" data-sort="za">
+          Z → A
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="sort-option" data-sort="size_desc">
+          Size ↓
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="sort-option" data-sort="size_asc">
+          Size ↑
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
     </div>
     <button id="importBtn" title="Add Repo" aria-label="Add Repository">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1971,7 +2245,30 @@ button:active { transform: scale(0.94); }
   </div>
 
   <div id="repoHero"></div>
-  <div id="repos"></div>
+
+  <div id="repoSections">
+    <div id="userReposSection" style="display:none;">
+      <div class="section-header">
+        <h2>
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Your Repos
+        </h2>
+        <span class="count-badge" id="userRepoCount">0</span>
+      </div>
+      <div id="userRepos"></div>
+    </div>
+
+    <div id="defaultReposSection">
+      <div class="section-header">
+        <h2>
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Libraries
+        </h2>
+        <span class="count-badge" id="defaultRepoCount">0</span>
+      </div>
+      <div id="defaultRepos"></div>
+    </div>
+  </div>
 
   <button id="backBtn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2052,7 +2349,11 @@ button:active { transform: scale(0.94); }
 </div>
 
 <script>
-const reposArea = document.getElementById('repos');
+const defaultReposArea = document.getElementById('defaultRepos');
+const userReposArea = document.getElementById('userRepos');
+const defaultReposSection = document.getElementById('defaultReposSection');
+const userReposSection = document.getElementById('userReposSection');
+const repoSections = document.getElementById('repoSections');
 const appsArea = document.getElementById('apps');
 const backBtn = document.getElementById('backBtn');
 const searchBar = document.getElementById('searchBar');
@@ -2063,7 +2364,8 @@ const toast = document.getElementById('toast');
 const toastText = document.getElementById('toastText');
 const importBtn = document.getElementById("importBtn");
 const header = document.querySelector("header");
-const sortSelect = document.getElementById("sortSelect");
+const sortBtn = document.getElementById("sortBtn");
+const sortDropdown = document.getElementById("sortDropdown");
 const appInfoModal = document.getElementById("appInfoModal");
 const importModal = document.getElementById("importModal");
 const importModalInput = document.getElementById("importModalInput");
@@ -2072,11 +2374,18 @@ const scrollTopBtn = document.getElementById("scrollTop");
 const loadingScreen = document.getElementById("loadingScreen");
 const repoHeroArea = document.getElementById("repoHero");
 const appsSectionHeader = document.getElementById("appsSectionHeader");
+const headerBackBtn = document.getElementById("headerBackBtn");
+const headerBreadcrumb = document.getElementById("headerBreadcrumb");
+const breadcrumbText = document.getElementById("breadcrumbText");
+const headerHome = document.getElementById("headerHome");
+const defaultRepoCount = document.getElementById("defaultRepoCount");
+const userRepoCount = document.getElementById("userRepoCount");
 
 let currentSort = "newest";
 let currentApps = [];
 let viewingRepoUrl = null;
 let viewingRepoData = null;
+let viewingRepoName = null;
 let allAppsIndex = [];
 allAppsIndex._keys = new Set();
 let filteredApps = [];
@@ -2084,10 +2393,11 @@ let loaded = 0;
 let lastScrollY = 0;
 let reposLoaded = false;
 let repoDataCache = new Map();
+let repoNameMap = new Map(); // url -> name for URL routing
+let defaultRepoEntries = [];
 
 const proxy = "https://chocomilkyX.vercel.app/api/proxy?url=";
 
-// Preload icon cache
 const iconCache = new Map();
 
 function preloadIcon(url) {
@@ -2095,6 +2405,83 @@ function preloadIcon(url) {
   const img = new Image();
   img.src = url;
   iconCache.set(url, img);
+}
+
+/* ═══════ URL ROUTING ═══════ */
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 80);
+}
+
+function pushRoute(type, value) {
+  let path = '/';
+  if (type === 'repo') {
+    path = '/repo/' + slugify(value);
+  } else if (type === 'search') {
+    path = '/search/' + encodeURIComponent(value);
+  }
+  try {
+    history.pushState({ type, value }, '', path);
+  } catch(e) {}
+  document.title = type === 'repo' ? `${value} — SideCore` : type === 'search' ? `Search: ${value} — SideCore` : 'SideCore Repos';
+}
+
+function replaceRoute(type, value) {
+  let path = '/';
+  if (type === 'repo') {
+    path = '/repo/' + slugify(value);
+  } else if (type === 'search') {
+    path = '/search/' + encodeURIComponent(value);
+  }
+  try {
+    history.replaceState({ type, value }, '', path);
+  } catch(e) {}
+  document.title = type === 'repo' ? `${value} — SideCore` : type === 'search' ? `Search: ${value} — SideCore` : 'SideCore Repos';
+}
+
+function goHome() {
+  try {
+    history.pushState({ type: 'home' }, '', '/');
+  } catch(e) {}
+  document.title = 'SideCore Repos';
+}
+
+window.addEventListener('popstate', (e) => {
+  const state = e.state;
+  if (!state || state.type === 'home') {
+    if (viewingRepoUrl) {
+      goBackToRepos(true);
+    } else {
+      searchInput.value = '';
+      searchClear.classList.remove('show');
+      searchShortcut.classList.remove('hide');
+      applySearch(true);
+    }
+  } else if (state.type === 'repo') {
+    // Find the repo URL by name
+    const url = findRepoUrlByName(state.value);
+    if (url) openRepo(url.url, url.useProxy, true);
+  } else if (state.type === 'search') {
+    searchInput.value = decodeURIComponent(state.value);
+    searchClear.classList.toggle('show', searchInput.value.length > 0);
+    searchShortcut.classList.toggle('hide', searchInput.value.length > 0);
+    applySearch(true);
+  }
+});
+
+function findRepoUrlByName(name) {
+  const slug = slugify(name);
+  for (const [url, rname] of repoNameMap) {
+    if (slugify(rname) === slug) {
+      const entry = defaultRepoEntries.find(e => e.url === url);
+      if (entry) return { url, useProxy: entry.useProxy };
+      // Check user repos
+      const userRepos = getUserRepos();
+      const ur = userRepos.find(r => r.url === url);
+      if (ur) return { url, useProxy: ur.useProxy };
+      return { url, useProxy: false };
+    }
+  }
+  return null;
 }
 
 /* ═══════ HELPERS ═══════ */
@@ -2182,6 +2569,36 @@ scrollTopBtn.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+/* ═══════ SORT DROPDOWN ═══════ */
+let sortOpen = false;
+
+sortBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  sortOpen = !sortOpen;
+  sortDropdown.classList.toggle("show", sortOpen);
+});
+
+document.addEventListener("click", (e) => {
+  if (sortOpen && !sortDropdown.contains(e.target) && e.target !== sortBtn) {
+    sortOpen = false;
+    sortDropdown.classList.remove("show");
+  }
+});
+
+sortDropdown.addEventListener("click", (e) => {
+  const option = e.target.closest(".sort-option");
+  if (!option) return;
+  currentSort = option.dataset.sort;
+  
+  // Update active state
+  sortDropdown.querySelectorAll(".sort-option").forEach(o => o.classList.remove("active"));
+  option.classList.add("active");
+  
+  sortOpen = false;
+  sortDropdown.classList.remove("show");
+  applySearch();
+});
+
 /* ═══════ SEARCH CLEAR & SHORTCUT ═══════ */
 searchInput.addEventListener("input", () => {
   const hasVal = searchInput.value.length > 0;
@@ -2197,12 +2614,16 @@ searchInput.addEventListener("blur", () => {
   if (!searchInput.value.length) searchShortcut.classList.remove("hide");
 });
 
-searchClear.addEventListener("click", () => {
+searchClear.addEventListener("click", (e) => {
+  e.stopPropagation();
   searchInput.value = "";
   searchClear.classList.remove("show");
   searchShortcut.classList.remove("hide");
   searchInput.focus();
   applySearch();
+  if (!viewingRepoUrl) {
+    goHome();
+  }
 });
 
 /* ═══════ CARD MOUSE GLOW ═══════ */
@@ -2234,7 +2655,6 @@ function openAppInfo(app) {
   appInfoModal.querySelector(".appicon").src = app.iconURL || "";
   appInfoModal.querySelector(".appname").textContent = app.name || "";
   
-  // Remove old versions section if present
   const oldVersions = appInfoModal.querySelector(".appinfo-content .versions");
   if (oldVersions) oldVersions.remove();
 
@@ -2322,6 +2742,7 @@ window.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if (appInfoModal.classList.contains("show")) closeAppInfo();
     else if (importModal.classList.contains("show")) closeImportModal();
+    else if (sortOpen) { sortOpen = false; sortDropdown.classList.remove("show"); }
   }
 });
 
@@ -2342,7 +2763,6 @@ async function fetchRepoJSON(url, useProxy = false) {
     if (!r.ok) throw 0;
     const data = await r.json();
     repoDataCache.set(cacheKey, data);
-    // Preload first few app icons
     if (data.apps) {
       data.apps.slice(0, 20).forEach(app => preloadIcon(app.iconURL));
     }
@@ -2381,20 +2801,27 @@ function sortApps(apps) {
   }
 }
 
-sortSelect.addEventListener("change", () => { currentSort = sortSelect.value; applySearch(); });
-
-/* ═══════ TOGGLE SORT VISIBILITY (also updates layout classes) ═══════ */
+/* ═══════ TOGGLE SORT VISIBILITY ═══════ */
 function toggleVersionSort({ show }) {
   if (show) {
-    sortSelect.classList.add("show");
-    searchInput.classList.add("has-sort");
-    searchClear.classList.add("has-sort");
-    searchShortcut.classList.add("has-sort");
+    sortBtn.classList.add("show");
   } else {
-    sortSelect.classList.remove("show");
-    searchInput.classList.remove("has-sort");
-    searchClear.classList.remove("has-sort");
-    searchShortcut.classList.remove("has-sort");
+    sortBtn.classList.remove("show");
+    sortOpen = false;
+    sortDropdown.classList.remove("show");
+  }
+}
+
+/* ═══════ HEADER BREADCRUMB + NAV ═══════ */
+function updateHeaderNav() {
+  if (viewingRepoUrl && viewingRepoName) {
+    headerBackBtn.classList.add("show");
+    headerBreadcrumb.classList.add("show");
+    breadcrumbText.textContent = viewingRepoName;
+  } else {
+    headerBackBtn.classList.remove("show");
+    headerBreadcrumb.classList.remove("show");
+    breadcrumbText.textContent = "";
   }
 }
 
@@ -2408,7 +2835,7 @@ function staggerShow(elements, baseDelay = 40, maxDelay = 600) {
   });
 }
 
-/* ═══════ INTERSECTION OBSERVER FOR LAZY CARDS ═══════ */
+/* ═══════ INTERSECTION OBSERVER ═══════ */
 const cardObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -2418,11 +2845,24 @@ const cardObserver = new IntersectionObserver((entries) => {
   });
 }, { rootMargin: "120px", threshold: 0.01 });
 
-/* ═══════ LOAD REPOS FROM repos.txt ═══════ */
+/* ═══════ UPDATE REPO COUNTS ═══════ */
+function updateRepoCounts() {
+  const defCount = defaultReposArea.querySelectorAll('.repo-card').length;
+  const usrCount = userReposArea.querySelectorAll('.repo-card').length;
+  defaultRepoCount.textContent = defCount;
+  userRepoCount.textContent = usrCount;
+  
+  if (usrCount > 0) {
+    userReposSection.style.display = '';
+  } else {
+    userReposSection.style.display = 'none';
+  }
+}
+
+/* ═══════ LOAD DEFAULT REPOS ═══════ */
 async function loadRepos() {
   reposLoaded = false;
-  reposArea.style.display = "block";
-  reposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
+  defaultReposArea.innerHTML = `<div class="loading-line">Loading libraries…</div>`;
 
   try {
     const txtRes = await fetch("./repos.txt");
@@ -2432,13 +2872,12 @@ async function loadRepos() {
     const urls = txtContent.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith("#") && !l.startsWith("//"));
 
     if (!urls.length) {
-      reposArea.innerHTML = `<div class="loading-line">No repos found in repos.txt</div>`;
+      defaultReposArea.innerHTML = `<div class="loading-line">No repos found in repos.txt</div>`;
       reposLoaded = true;
       return;
     }
 
     const repoEntries = [];
-    // Fetch all repos in parallel for speed
     await Promise.all(urls.map(async (url) => {
       let data = await fetchRepoJSON(url, false);
       let useProxy = false;
@@ -2447,21 +2886,26 @@ async function loadRepos() {
     }));
 
     const ordered = urls.map(u => repoEntries.find(e => e.url === u)).filter(Boolean);
+    defaultRepoEntries = ordered;
 
     if (!ordered.length) {
-      reposArea.innerHTML = `<div class="loading-line">Failed to load any repos.</div>`;
+      defaultReposArea.innerHTML = `<div class="loading-line">Failed to load any repos.</div>`;
       reposLoaded = true;
       return;
     }
 
     allAppsIndex = [];
     allAppsIndex._keys = new Set();
-    ordered.forEach(e => indexRepoApps(e.data));
+    ordered.forEach(e => {
+      indexRepoApps(e.data);
+      const name = e.data.name || e.data.apps?.[0]?.name || "Unnamed";
+      repoNameMap.set(e.url, name);
+    });
 
     currentApps = allAppsIndex.slice();
     filteredApps = currentApps.slice();
     loaded = 0;
-    reposArea.innerHTML = "";
+    defaultReposArea.innerHTML = "";
 
     const cards = [];
     ordered.forEach((entry) => {
@@ -2475,10 +2919,16 @@ async function loadRepos() {
       const div = document.createElement("div");
       div.className = "repo-card";
       div.dataset.url = entry.url;
+      div.dataset.type = "default";
       div.innerHTML = `
-        <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
+        <div class="repo-icon-wrap">
+          <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
+        </div>
         <div class="repo-info">
-          <div class="repo-name">${escapeHtml(name)}</div>
+          <div class="repo-name">
+            ${escapeHtml(name)}
+            <span class="repo-type-tag default">Default</span>
+          </div>
           <div class="repo-app-count">${appCount} app${appCount !== 1 ? 's' : ''}</div>
           <div class="repo-desc">${escapeHtml(desc)}</div>
         </div>
@@ -2487,16 +2937,17 @@ async function loadRepos() {
           <button class="copyBtn" data-url="${entry.url}">Copy</button>
         </div>
       `;
-      reposArea.appendChild(div);
+      defaultReposArea.appendChild(div);
       cards.push(div);
     });
 
     staggerShow(cards, 65);
     searchBar.style.display = "flex";
+    updateRepoCounts();
     reposLoaded = true;
 
   } catch (err) {
-    reposArea.innerHTML = `<div class="loading-line">Failed to load repos.txt</div>`;
+    defaultReposArea.innerHTML = `<div class="loading-line">Failed to load repos.txt</div>`;
     reposLoaded = true;
   }
 }
@@ -2522,36 +2973,62 @@ async function fetchUserRepo(url, useProxy = false) {
   } catch { return null; }
 }
 
-/* ═══════ RENDER REPO CARD ═══════ */
-function renderRepoCard(repoData, repoUrl, useProxy = true, isUserRepo = true) {
+/* ═══════ RENDER USER REPO CARD ═══════ */
+function renderUserRepoCard(repoData, repoUrl, useProxy = true) {
   const first = repoData.apps[0] || {};
   const icon = repoData.iconURL || first.iconURL || "";
   const name = repoData.name || first.name || "Unnamed Repo";
   const desc = repoData.description || first.subtitle || first.localizedDescription || "";
   const appCount = repoData.apps?.length || 0;
 
+  repoNameMap.set(repoUrl, name);
+
   const div = document.createElement("div");
   div.className = "repo-card";
   div.dataset.url = repoUrl;
+  div.dataset.type = "user";
   div.innerHTML = `
-    <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
+    <div class="repo-icon-wrap">
+      <img class="repo-icon" src="${icon}" alt="" loading="eager" decoding="async"/>
+      <div class="user-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
     <div class="repo-info">
-      <div class="repo-name">${escapeHtml(name)}</div>
+      <div class="repo-name">
+        ${escapeHtml(name)}
+        <span class="repo-type-tag user">Custom</span>
+      </div>
       <div class="repo-app-count">${appCount} app${appCount !== 1 ? 's' : ''}</div>
       <div class="repo-desc">${escapeHtml(desc)}</div>
     </div>
     <div class="repo-actions">
       <button class="openBtn" data-url="${repoUrl}" data-use-proxy="${useProxy}">Open</button>
       <button class="copyBtn" data-url="${repoUrl}">Copy</button>
-      ${isUserRepo ? `<button class="removeBtn">Remove</button>` : ""}
+      <button class="removeBtn">Remove</button>
     </div>
   `;
-  reposArea.prepend(div);
+  userReposArea.appendChild(div);
   requestAnimationFrame(() => requestAnimationFrame(() => div.classList.add("show")));
+  
+  userReposSection.style.display = '';
+  updateRepoCounts();
+}
+
+/* ═══════ SHOW/HIDE REPOS SECTIONS ═══════ */
+function showRepoSections() {
+  repoSections.style.display = "";
+  repoSections.classList.add("page-transition-in");
+  staggerShow([...defaultReposArea.children, ...userReposArea.children], 45);
+  setTimeout(() => repoSections.classList.remove("page-transition-in"), 500);
+}
+
+function hideRepoSections() {
+  repoSections.style.display = "none";
 }
 
 /* ═══════ OPEN REPO ═══════ */
-async function openRepo(url, useProxy) {
+async function openRepo(url, useProxy, isPopState = false) {
   viewingRepoUrl = url;
   searchInput.value = "";
   searchClear.classList.remove("show");
@@ -2560,11 +3037,11 @@ async function openRepo(url, useProxy) {
   toggleVersionSort({ show: false });
 
   // Animate out repos
-  reposArea.classList.add("page-transition-out");
+  repoSections.classList.add("page-transition-out");
   await new Promise(r => setTimeout(r, 200));
   
-  reposArea.style.display = "none";
-  reposArea.classList.remove("page-transition-out");
+  hideRepoSections();
+  repoSections.classList.remove("page-transition-out");
   repoHeroArea.innerHTML = "";
   appsSectionHeader.innerHTML = "";
   appsArea.innerHTML = "";
@@ -2585,19 +3062,31 @@ async function openRepo(url, useProxy) {
     viewingRepoData = data;
     currentApps = data.apps || [];
     
-    // Preload all icons for this repo
-    currentApps.forEach(app => preloadIcon(app.iconURL));
-
     const first = data.apps?.[0] || {};
     const icon = data.iconURL || first.iconURL || "";
     const name = data.name || first.name || "Unnamed Repo";
     const desc = data.description || first.subtitle || "";
+    viewingRepoName = name;
+
+    // Preload all icons for this repo
+    currentApps.forEach(app => preloadIcon(app.iconURL));
+
+    // Update URL
+    if (!isPopState) pushRoute('repo', name);
+    updateHeaderNav();
+
     repoHeroArea.innerHTML = `
       <div class="repo-hero">
         <img src="${icon}" alt="" loading="eager" decoding="async"/>
         <div class="repo-hero-info">
           <h2>${escapeHtml(name)}</h2>
           <p>${escapeHtml(desc)}</p>
+        </div>
+        <div class="repo-hero-actions">
+          <button onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('URL copied','copy'))">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;vertical-align:-2px;margin-right:3px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy URL
+          </button>
         </div>
       </div>
     `;
@@ -2624,24 +3113,23 @@ function renderNextBatch() {
   loaded += next.length;
 }
 
-function applySearch() {
+function applySearch(isPopState = false) {
   const q = searchInput.value.trim().toLowerCase();
 
   const base = viewingRepoUrl ? currentApps : allAppsIndex;
 
   if (!q) {
     if (!viewingRepoUrl) {
-      reposArea.style.display = "";
-      reposArea.classList.add("page-transition-in");
-      setTimeout(() => reposArea.classList.remove("page-transition-in"), 500);
+      showRepoSections();
       repoHeroArea.innerHTML = "";
       appsSectionHeader.innerHTML = "";
       appsArea.innerHTML = "";
-      staggerShow([...reposArea.children], 50);
       filteredApps = [];
       loaded = 0;
       window.onscroll = null;
       toggleVersionSort({ show: false });
+      if (!isPopState) goHome();
+      updateHeaderNav();
       return;
     }
     filteredApps = sortApps(base);
@@ -2653,7 +3141,12 @@ function applySearch() {
     return;
   }
 
-  if (!viewingRepoUrl) reposArea.style.display = "none";
+  // When searching from home, update URL
+  if (!viewingRepoUrl && !isPopState) {
+    replaceRoute('search', q);
+  }
+
+  if (!viewingRepoUrl) hideRepoSections();
 
   filteredApps = sortApps(base.filter(a => {
     const name = (a.name || "").toLowerCase();
@@ -2683,7 +3176,12 @@ function updateSectionHeader() {
   if (count > 0) {
     appsSectionHeader.innerHTML = `
       <div class="section-header">
-        <h2>${q ? 'Results' : 'Apps'}</h2>
+        <h2>
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            ${q ? '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' : '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'}
+          </svg>
+          ${q ? 'Results' : 'Apps'}
+        </h2>
         <span class="count-badge">${count} app${count !== 1 ? 's' : ''}</span>
       </div>
     `;
@@ -2695,7 +3193,7 @@ function updateSectionHeader() {
 let searchTimeout;
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(applySearch, 120);
+  searchTimeout = setTimeout(() => applySearch(), 120);
 });
 
 /* ═══════ RENDER APPS ═══════ */
@@ -2753,7 +3251,6 @@ function renderApps(apps, append = false) {
       </a>
     `;
 
-    // Handle icon load transition
     const img = card.querySelector(".icon img");
     if (img) {
       if (img.complete && img.naturalWidth) {
@@ -2791,8 +3288,8 @@ document.addEventListener('error', function(e) {
   }
 }, true);
 
-/* ═══════ EVENTS ═══════ */
-reposArea.addEventListener("click", e => {
+/* ═══════ REPO CLICK EVENTS ═══════ */
+function handleRepoAreaClick(e) {
   const openBtnEl = e.target.closest(".openBtn");
   if (openBtnEl) {
     addRipple(openBtnEl, e);
@@ -2809,6 +3306,7 @@ reposArea.addEventListener("click", e => {
   if (removeBtnEl) {
     const card = removeBtnEl.closest(".repo-card");
     removeUserRepo(card.dataset.url);
+    repoNameMap.delete(card.dataset.url);
     card.style.transition = "opacity 0.35s var(--ease), transform 0.35s var(--ease), max-height 0.4s var(--ease) 0.1s, margin 0.4s var(--ease) 0.1s, padding 0.4s var(--ease) 0.1s";
     card.style.opacity = "0";
     card.style.transform = "translateX(-20px) scale(0.95)";
@@ -2820,12 +3318,11 @@ reposArea.addEventListener("click", e => {
       card.style.paddingBottom = "0";
       card.style.borderWidth = "0";
     });
-    setTimeout(() => card.remove(), 500);
+    setTimeout(() => { card.remove(); updateRepoCounts(); }, 500);
     showToast("Repo removed", "info");
     return;
   }
   
-  // Click on repo card itself to open
   const repoCard = e.target.closest(".repo-card");
   if (repoCard && !e.target.closest(".repo-actions")) {
     const openBtnInCard = repoCard.querySelector(".openBtn");
@@ -2834,10 +3331,13 @@ reposArea.addEventListener("click", e => {
       openRepo(openBtnInCard.dataset.url, openBtnInCard.dataset.useProxy === "true");
     }
   }
-});
+}
 
-backBtn.addEventListener("click", async () => {
-  // Animate out current view
+defaultReposArea.addEventListener("click", handleRepoAreaClick);
+userReposArea.addEventListener("click", handleRepoAreaClick);
+
+/* ═══════ GO BACK TO REPOS ═══════ */
+async function goBackToRepos(isPopState = false) {
   appsArea.classList.add("page-transition-out");
   repoHeroArea.classList.add("page-transition-out");
   appsSectionHeader.classList.add("page-transition-out");
@@ -2846,6 +3346,7 @@ backBtn.addEventListener("click", async () => {
   
   viewingRepoUrl = null;
   viewingRepoData = null;
+  viewingRepoName = null;
   appsArea.innerHTML = "";
   appsArea.classList.remove("page-transition-out");
   repoHeroArea.innerHTML = "";
@@ -2861,14 +3362,29 @@ backBtn.addEventListener("click", async () => {
   searchClear.classList.remove("show");
   searchShortcut.classList.remove("hide");
 
+  if (!isPopState) goHome();
+  updateHeaderNav();
+
   if (reposLoaded) {
-    reposArea.style.display = "";
-    reposArea.classList.add("page-transition-in");
-    staggerShow([...reposArea.children], 45);
-    setTimeout(() => reposArea.classList.remove("page-transition-in"), 500);
+    showRepoSections();
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+backBtn.addEventListener("click", () => goBackToRepos());
+headerBackBtn.addEventListener("click", () => goBackToRepos());
+
+headerHome.addEventListener("click", () => {
+  if (viewingRepoUrl) {
+    goBackToRepos();
+  } else {
+    searchInput.value = "";
+    searchClear.classList.remove("show");
+    searchShortcut.classList.remove("hide");
+    applySearch();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 });
 
 /* ═══════ IMPORT MODAL ═══════ */
@@ -2890,6 +3406,16 @@ importModalBtn.addEventListener("click", async () => {
   if (!url) return;
   if (!url.startsWith("http")) return showToast("Please enter a valid URL", "error");
 
+  // Check for duplicates
+  const existing = getUserRepos();
+  if (existing.find(r => r.url === url)) {
+    return showToast("Repo already added", "info");
+  }
+  // Also check default repos
+  if (defaultRepoEntries.find(e => e.url === url)) {
+    return showToast("This is already a default repo", "info");
+  }
+
   importModalBtn.textContent = "Adding…";
   importModalBtn.disabled = true;
 
@@ -2903,7 +3429,7 @@ importModalBtn.addEventListener("click", async () => {
     return showToast("Invalid repo URL", "error", 2800);
   }
 
-  renderRepoCard(repo, url, useProxy, true);
+  renderUserRepoCard(repo, url, useProxy);
   saveUserRepo({ url, useProxy });
   indexRepoApps(repo);
 
@@ -2929,9 +3455,10 @@ document.addEventListener("keydown", e => {
   }
 });
 
-/* ═══════ DOUBLE TAP TO SCROLL TOP (mobile QOL) ═══════ */
+/* ═══════ DOUBLE TAP HEADER TO SCROLL TOP ═══════ */
 let lastHeaderTap = 0;
-header.addEventListener("click", () => {
+header.addEventListener("click", (e) => {
+  if (e.target.closest('.header-nav-btn') || e.target.closest('.header-left')) return;
   const now = Date.now();
   if (now - lastHeaderTap < 400) {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2947,10 +3474,27 @@ function dismissLoading() {
   setTimeout(() => loadingScreen.remove(), 800);
 }
 
+/* ═══════ HANDLE INITIAL ROUTE ═══════ */
+function handleInitialRoute() {
+  const path = window.location.pathname;
+  
+  if (path.startsWith('/repo/')) {
+    const slug = path.replace('/repo/', '');
+    // We'll try to open this repo after loading
+    return { type: 'repo', slug };
+  } else if (path.startsWith('/search/')) {
+    const query = decodeURIComponent(path.replace('/search/', ''));
+    return { type: 'search', query };
+  }
+  return null;
+}
+
 /* ═══════ BOOT ═══════ */
+const initialRoute = handleInitialRoute();
+
 loadRepos().then(async () => {
-  const userRepos = getUserRepos();
   // Load user repos in parallel
+  const userRepos = getUserRepos();
   const userResults = await Promise.allSettled(
     userRepos.map(async r => {
       const repo = await fetchUserRepo(r.url, r.useProxy);
@@ -2960,11 +3504,28 @@ loadRepos().then(async () => {
   userResults.forEach(result => {
     if (result.status === 'fulfilled' && result.value) {
       const { repo, url, useProxy } = result.value;
-      renderRepoCard(repo, url, useProxy, true);
+      renderUserRepoCard(repo, url, useProxy);
       indexRepoApps(repo);
     }
   });
+  
+  updateRepoCounts();
   dismissLoading();
+
+  // Handle initial route after everything is loaded
+  if (initialRoute) {
+    if (initialRoute.type === 'repo') {
+      const found = findRepoUrlByName(initialRoute.slug);
+      if (found) {
+        setTimeout(() => openRepo(found.url, found.useProxy, true), 100);
+      }
+    } else if (initialRoute.type === 'search') {
+      searchInput.value = initialRoute.query;
+      searchClear.classList.toggle('show', initialRoute.query.length > 0);
+      searchShortcut.classList.toggle('hide', initialRoute.query.length > 0);
+      setTimeout(() => applySearch(true), 100);
+    }
+  }
 }).catch(() => {
   dismissLoading();
 });
